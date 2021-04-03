@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"istio-redirector/pkg/files"
 	"istio-redirector/pkg/web"
 	"os"
 	"os/signal"
@@ -11,16 +12,20 @@ import (
 	_ "github.com/n0rad/go-erlog/register"
 )
 
-var serverAddr string = "127.0.0.1:8080"
-
 func main() {
 	logs.SetLevel(logs.DEBUG)
 
-	srv := web.Register(serverAddr)
+	cfg, err := files.ReadConfigFile()
+	if err != nil {
+		logs.WithE(err).Error("can't load config file")
+		os.Exit(1)
+	}
+
+	srv := web.Register(cfg)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
-		logs.WithField("address", serverAddr).Info("server has started")
+		logs.WithField("address", cfg.ServerURL).Info("server has started")
 		if err := srv.ListenAndServe(); err != nil {
 			logs.WithE(err).Info("server has stopped")
 		}

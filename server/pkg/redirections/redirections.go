@@ -7,6 +7,7 @@ import (
 	"istio-redirector/pkg/files"
 	"istio-redirector/pkg/metrics"
 	"mime/multipart"
+	"os"
 	"strconv"
 
 	"github.com/n0rad/go-erlog/logs"
@@ -33,13 +34,17 @@ type Redirections struct {
 }
 
 func Generate(inputData InputData) error {
+	cfg, err := files.ReadConfigFile()
+	if err != nil {
+		logs.WithE(err).Error("can't load config file")
+		os.Exit(1)
+	}
+
 	r := Redirections{
 		Name:                inputData.RedirectionName,
-		Namespace:           "infra",
-		DestinationRuleName: "http-echo.infra.svc.cluster.local",
-		Hosts: []string{
-			"domain.example",
-		},
+		Namespace:           cfg.VirtualServiceNamespace,
+		DestinationRuleName: cfg.DestinationRule,
+		Hosts:               cfg.VirtualServiceHosts,
 	}
 
 	rulesCSV := csv.ReadFile(inputData.File)
