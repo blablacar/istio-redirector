@@ -1,0 +1,21 @@
+{
+  "name": "istio-redirector",
+  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.2.5",
+    "next": "10.0.8",
+    "papaparse": "^5.3.0",
+    "postcss": "^8.2.8",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "tailwindcss": "^2.0.3"
+  }
+}

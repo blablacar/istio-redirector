@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .Namespace }}
+  labels:
+    app: istio-redirector
+spec:
+  gateways:
+    - istio-system/istio-ilbgateway
+    - istio-system/istio-ingressgateway
+  hosts:
+    {{- range $host := .Hosts}}
+    - {{ $host }}
+    {{- end }}
+  http:
+{{- range $rule := .Rules}}
+  - route:
+    - destination:
+        host: "{{ $.DestinationRuleName }}"
+    match:
+    - uri:
+        exact: {{ $rule.From }}
+    {{- if (lt $rule.Code 400) }}
+    redirect:
+      uri: {{ $rule.To }}
+      redirectCode: {{ $rule.Code }}
+    {{- else }}
+    fault:
+      abort:
+        httpStatus: {{ $rule.Code }}
+    {{- end }}
+{{ end }}
