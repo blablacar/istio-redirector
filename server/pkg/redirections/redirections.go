@@ -33,7 +33,7 @@ type Redirections struct {
 	Rules               []Rule
 }
 
-func Generate(inputData InputData) error {
+func Generate(inputData InputData) (bytes.Buffer, error) {
 	cfg, err := files.ReadConfigFile()
 	if err != nil {
 		logs.WithE(err).Error("can't load config file")
@@ -76,22 +76,16 @@ func Generate(inputData InputData) error {
 	t, err := template.ParseFiles("templates/virtual-service.yaml")
 	if err != nil {
 		logs.WithE(err).Error("fail to parse template")
-		return err
+		return payload, err
 	}
 
 	err = t.Execute(&payload, r)
 	if err != nil {
 		logs.WithE(err).Error("fail to execute content to template")
-		return err
-	}
-
-	err = files.WriteContentToFile(payload.Bytes(), "generated/virtual-service.yaml")
-	if err != nil {
-		logs.WithE(err).Error("fail to write content to file")
-		return err
+		return payload, err
 	}
 
 	metrics.CSVFileImported.Inc()
 
-	return nil
+	return payload, nil
 }

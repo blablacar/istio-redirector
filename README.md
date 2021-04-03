@@ -19,7 +19,6 @@ Once generated, the file can either be added to your GitOps repository or downlo
 ### Server side
 - [ ] Write tests
 - [ ] Create a PR to a given repository when the Virtual Service as been created
-- [ ] Return Virtual Service file to be able to download it as .yaml file
 - [ ] Add Kubernetes files to be able to deploy the application in a cluster
 - [ ] Check Virtual Service length to make sure it's not too long for the K8s API
 

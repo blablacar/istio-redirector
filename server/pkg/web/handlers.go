@@ -1,8 +1,8 @@
 package web
 
 import (
-	"encoding/json"
 	"fmt"
+	"io"
 	"istio-redirector/pkg/redirections"
 	"net/http"
 
@@ -18,7 +18,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	err = redirections.Generate(
+	payload, err := redirections.Generate(
 		redirections.InputData{
 			File:            file,
 			RedirectionName: r.FormValue("redirection_name"),
@@ -29,8 +29,14 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	logs.Debug("file has been generated")
-	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+
+	//copy the relevant headers. If you want to preserve the downloaded file name, extract it with go's url parser.
+	w.Header().Set("Content-Disposition", "attachment; filename=virtual-service.yaml")
+	w.Header().Set("Content-Type", r.Header.Get("Content-Type"))
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", payload.Len()))
+
+	//stream the body to the client without fully loading it into memory
+	io.Copy(w, &payload)
 }
 
 func CheckURL(w http.ResponseWriter, r *http.Request) {

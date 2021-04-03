@@ -26,7 +26,7 @@ func ReadConfigFile() (cfg types.Config, err error) {
 	defer f.Close()
 
 	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(config)
+	err = decoder.Decode(&config)
 	if err != nil {
 		return config, err
 	}
