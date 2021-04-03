@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"istio-redirector/pkg/metrics"
+	"istio-redirector/types"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -55,7 +56,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
-func Register(serverAddr string) *http.Server {
+func Register(srvConfig types.Config) *http.Server {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
@@ -72,11 +73,11 @@ func Register(serverAddr string) *http.Server {
 	spa := spaHandler{staticPath: "../front/out", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
 
-	corsOrigins := handlers.AllowedOrigins([]string{"http://localhost:3000", "http://localhost:8080"})
+	corsOrigins := handlers.AllowedOrigins(srvConfig.AllowedOrigins)
 
 	srv := &http.Server{
 		Handler:      handlers.CORS(corsOrigins)(router),
-		Addr:         serverAddr,
+		Addr:         srvConfig.ServerURL,
 		WriteTimeout: 30 * time.Second,
 		ReadTimeout:  30 * time.Second,
 	}

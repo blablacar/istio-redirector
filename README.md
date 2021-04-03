@@ -17,13 +17,15 @@ Once generated, the file can either be added to your GitOps repository or downlo
 ## Coming features
 
 ### Server side
-- [ ] Create a single config file to manage settings
+- [ ] Write tests
 - [ ] Create a PR to a given repository when the Virtual Service as been created
 - [ ] Return Virtual Service file to be able to download it as .yaml file
 - [ ] Add Kubernetes files to be able to deploy the application in a cluster
+- [ ] Check Virtual Service length to make sure it's not too long for the K8s API
 
 ### Front side
 - [ ] Allow user to remove a redirection on the UI before generating the Virtual Service
+- [ ] Show the csv syntaxe needed in input for the 2 kinds of redirections
 
 ### The UI for SEO Managers
 
@@ -86,6 +88,22 @@ Before creating a PR, test and check for any errors. If there are no errors, the
 
 For more information, please refer to the Contributing section.
 
+## Build and run
+
+### Build the Next.js app
+From the `./front` directory
+
+`yarn run build`&& `yarn run export`
+
+This will create a static export of the app in `./front/out`
+
+### Build the server
+From the `./server` directory
+
+`go build .`
+This command will build the server and directly use the front app from `./front/out`.
+
+Once built, you can simply run `./istio-redirector`
 ## 💬 Contributing
 
 * [Code of Conduct](https://github.com/etifontaine/istio-redirector/blob/main/CODE_OF_CONDUCT.md)
