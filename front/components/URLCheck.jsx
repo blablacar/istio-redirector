@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import getConfig from 'next/config'
+import Exclamation from './Icons/exclamation'
+import Check from './Icons/check'
 
 const { publicRuntimeConfig } = getConfig()
 
@@ -12,9 +14,6 @@ const URLCheck = ({ url }) => {
             if (res.ok) {
                 setValidity(true)
             }
-            console.log(res);
-            console.log(res.ok);
-            console.log(res.status);
         }).catch(err => {
             setValidity(false)
         })
@@ -23,7 +22,7 @@ const URLCheck = ({ url }) => {
 
     return (
         <div className="flex items-center">
-            <div className="flex-shrink-0 h-10">{isValid ? "Exist" : 'Gone'}</div>
+            <div className="flex-shrink-0 h-10">{isValid ? <Check /> : <Exclamation />}</div>
         </div>
     )
 }

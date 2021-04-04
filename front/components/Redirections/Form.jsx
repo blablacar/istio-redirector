@@ -15,7 +15,8 @@ const Form = () => {
                 setCSVFile(event.target.files[0])
                 Papa.parse(event.target.files[0], {
                     complete: showCSV,
-                    header: false
+                    header: false,
+                    skipEmptyLines: true,
                 });
                 break
             default:

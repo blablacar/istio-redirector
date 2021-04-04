@@ -32,7 +32,17 @@ export function useGetLayout() {
 		formDataValues.append('csv_file', CSVFile);
 		formDataValues.append('redirection_name', formData.redirection_name)
 		fetch(`${publicRuntimeConfig.API_URL}/api/csv/upload`, { method: 'POST', body: formDataValues })
-			.then(() => clearData())
+			.then(async response => {
+				const file = await response.blob()
+				const href = window.URL.createObjectURL(file);
+				const link = document.createElement('a');
+				link.href = href;
+				link.setAttribute('download', 'config.yaml'); //or any other extension
+				document.body.appendChild(link);
+				link.click();
+
+				clearData()
+			})
 			.then(() => showSuccess(true))
 	}
 
