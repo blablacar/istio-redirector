@@ -1,14 +1,14 @@
 package csv
 
 import (
+	"bytes"
 	"encoding/csv"
-	"mime/multipart"
 
 	"github.com/n0rad/go-erlog/logs"
 )
 
-func ReadFile(file multipart.File) [][]string {
-	records, err := csv.NewReader(file).ReadAll()
+func ReadFile(file []byte) [][]string {
+	records, err := csv.NewReader(bytes.NewBuffer(file)).ReadAll()
 	if err != nil {
 		logs.Error("unable to parse file as CSV")
 	}

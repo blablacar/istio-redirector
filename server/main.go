@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"istio-redirector/pkg/files"
+	"istio-redirector/domain"
 	"istio-redirector/pkg/web"
 	"os"
 	"os/signal"
@@ -10,22 +10,33 @@ import (
 
 	"github.com/n0rad/go-erlog/logs"
 	_ "github.com/n0rad/go-erlog/register"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	logs.SetLevel(logs.DEBUG)
 
-	cfg, err := files.ReadConfigFile()
-	if err != nil {
-		logs.WithE(err).Error("can't load config file")
-		os.Exit(1)
+	var serverConfig domain.Config
+	// Set the file name of the configurations file
+	viper.SetConfigName("config")
+	// Set the path to look for the configurations file
+	viper.AddConfigPath(".")
+	viper.SetConfigType("yaml")
+
+	if err := viper.ReadInConfig(); err != nil {
+		logs.WithE(err).Info("can't read config.yaml")
 	}
 
-	srv := web.Register(cfg)
+	err := viper.Unmarshal(&serverConfig)
+	if err != nil {
+		logs.WithE(err).Info("unable to decode into struct")
+	}
+
+	srv := web.Register(serverConfig)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
-		logs.WithField("address", cfg.ServerURL).Info("server has started")
+		logs.WithField("address", serverConfig.Server.URL).Info("server has started")
 		if err := srv.ListenAndServe(); err != nil {
 			logs.WithE(err).Info("server has stopped")
 		}

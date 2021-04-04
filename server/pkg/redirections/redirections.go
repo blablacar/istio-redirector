@@ -2,68 +2,52 @@ package redirections
 
 import (
 	"bytes"
-	"html/template"
+	"io/ioutil"
+	"istio-redirector/domain"
 	"istio-redirector/pkg/csv"
-	"istio-redirector/pkg/files"
 	"istio-redirector/pkg/metrics"
-	"mime/multipart"
-	"os"
+	"istio-redirector/pkg/redirections/istio"
 	"strconv"
+	"text/template"
 
 	"github.com/n0rad/go-erlog/logs"
+	"github.com/spf13/viper"
 )
 
-type InputData struct {
-	File            multipart.File
-	RedirectionName string
-}
+func Generate(inputData domain.InputData) (bytes.Buffer, error) {
+	const redirectionType string = "istio"
 
-type Rule struct {
-	Name string
-	From string
-	To   string
-	Code int
-}
-
-type Redirections struct {
-	Name                string
-	Namespace           string
-	DestinationRuleName string
-	Hosts               []string
-	Rules               []Rule
-}
-
-func Generate(inputData InputData) (bytes.Buffer, error) {
-	cfg, err := files.ReadConfigFile()
+	var istioConfig istio.Config
+	err := viper.Unmarshal(&istioConfig)
 	if err != nil {
-		logs.WithE(err).Error("can't load config file")
-		os.Exit(1)
+		logs.WithE(err).Info("unable to decode into struct")
 	}
 
-	r := Redirections{
+	r := istio.Redirections{
 		Name:                inputData.RedirectionName,
-		Namespace:           cfg.VirtualServiceNamespace,
-		DestinationRuleName: cfg.DestinationRule,
-		Hosts:               cfg.VirtualServiceHosts,
+		Namespace:           istioConfig.Istio.VirtualServiceNamespace,
+		DestinationRuleName: istioConfig.Istio.DestinationRule,
+		Hosts:               istioConfig.Istio.VirtualServiceHosts,
 	}
 
-	rulesCSV := csv.ReadFile(inputData.File)
+	byteContainer, err := ioutil.ReadAll(inputData.File)
+	rulesCSV := csv.ReadFile(byteContainer)
 	for _, rule := range rulesCSV {
-		var data Rule
-		if len(rule) > 2 {
+		var data domain.Rule
+		if inputData.RedirectionType == "3xx" {
 			code, err := strconv.Atoi(rule[2])
 			if err != nil {
 				logs.WithE(err).Error("fail to parse line")
 				break
 			}
-			data = Rule{
+			data = domain.Rule{
 				From: rule[0],
 				To:   rule[1],
 				Code: code,
 			}
 		} else {
 			code, _ := strconv.Atoi(rule[1])
-			data = Rule{
+			data = domain.Rule{
 				From: rule[0],
 				Code: code,
 			}

@@ -1,9 +1,11 @@
-serverURL: "0.0.0.0:8080"
-allowedOrigins:
-  - "http://localhost:3000" # Next.js dev server
-  - "http://localhost:8080" # Go Web server once built
+server:
+  URL: "0.0.0.0:8080"
+  allowedOrigins:
+    - "http://localhost:3000" # Next.js dev server
+    - "http://localhost:8080" # Go Web server once built
 
-destinationRule: "http-echo.infra.svc.cluster.local"
-virtualServiceNamespace: "infra"
-virtualServiceHosts:
-  - "domain.example"
+istio:
+  destinationRule: "http-echo.infra.svc.cluster.local"
+  virtualServiceNamespace: "infra"
+  virtualServiceHosts:
+    - "domain.example"
