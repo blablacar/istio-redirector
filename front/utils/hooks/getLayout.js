@@ -31,6 +31,7 @@ export function useGetLayout() {
 		const formDataValues = new FormData()
 		formDataValues.append('csv_file', CSVFile);
 		formDataValues.append('redirection_name', formData.redirection_name)
+		formDataValues.append('redirection_type', redirectionType)
 		fetch(`${publicRuntimeConfig.API_URL}/api/csv/upload`, { method: 'POST', body: formDataValues })
 			.then(async response => {
 				const file = await response.blob()

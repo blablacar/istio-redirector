@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"io"
+	"istio-redirector/domain"
 	"istio-redirector/pkg/redirections"
 	"net/http"
 
@@ -19,11 +20,13 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	payload, err := redirections.Generate(
-		redirections.InputData{
+		domain.InputData{
 			File:            file,
 			RedirectionName: r.FormValue("redirection_name"),
+			RedirectionType: r.FormValue("redirection_type"),
 		},
 	)
+
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
@@ -51,16 +54,16 @@ func CheckURL(w http.ResponseWriter, r *http.Request) {
 
 	client := &http.Client{}
 
-	resp, err := client.Head(url)
+	_, err := client.Head(url)
 
 	if err != nil {
-		fmt.Println(err)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("url parameter is missing"))
 		return
 	}
 
-	fmt.Println(url, " status is : ", resp.Status)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	return
 }
