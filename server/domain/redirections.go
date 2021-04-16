@@ -1,9 +1,7 @@
 package domain
 
-import "mime/multipart"
-
 type InputData struct {
-	File            multipart.File
+	File            []byte
 	RedirectionName string
 	RedirectionType string
 }

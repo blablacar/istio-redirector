@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: couocu
+  namespace: infra
+  labels:
+    app: istio-redirector
+spec:
+  gateways:
+    - istio-system/istio-ilbgateway
+    - istio-system/istio-ingressgateway
+  hosts:
+    - domain.example
+  http:
+  - route:
+    - destination:
+        host: "http-echo.infra.svc.cluster.local"
+    match:
+    - uri:
+        exact: https://www.domain.example/a
+    redirect:
+      uri: https://www.google.com
+      redirectCode: 301
+
+  - route:
+    - destination:
+        host: "http-echo.infra.svc.cluster.local"
+    match:
+    - uri:
+        exact: https://www.domain.example/c
+    redirect:
+      uri: https://www.gooogle.com
+      redirectCode: 301
+

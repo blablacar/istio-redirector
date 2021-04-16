@@ -14,13 +14,13 @@ const Nav = () => {
                                 </ActiveLink>
                             </div>
                         </div>
-                        {/* <div className="hidden sm:block sm:ml-6">
+                        <div className="hidden sm:block sm:ml-6">
                             <div className="flex space-x-4">
-                                <ActiveLink activeClassName="bg-gray-900" href="/virtual-services">
-                                    <a className="text-white px-3 py-2 rounded-md text-sm font-medium">Virtual Services</a>
+                                <ActiveLink activeClassName="bg-gray-900" href="/documentation">
+                                    <a className="text-white px-3 py-2 rounded-md text-sm font-medium">Documentation</a>
                                 </ActiveLink>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>

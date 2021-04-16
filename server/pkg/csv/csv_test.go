@@ -7,7 +7,7 @@ import (
 
 func TestReadFile(t *testing.T) {
 
-	path := "../../mocks/status_301.csv"
+	path := "../../mocks/csv/status_301.csv"
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		t.Errorf("can't read file: %v", path)

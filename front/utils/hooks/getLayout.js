@@ -11,10 +11,21 @@ export function useGetLayout() {
 	const [formData, setFormData] = useState({})
 	const [alert, setAlert] = useState({ isVisible: false })
 	const [CSVData, setCSVData] = useState([])
+	const [virtualService, setVS] = useState()
 
 	const clearData = () => {
 		setCSVFile()
 		setCSVData([])
+	}
+
+	const removeRedirection = (payload) => {
+		let cleanedData = [...CSVData]
+		cleanedData.forEach((redirection, index) => {
+			if (redirection[1] === payload) {
+				cleanedData.splice(index, 1);
+			}
+		});
+		setCSVData(cleanedData)
 	}
 
 	const handleChangeRedirectionType = (e) => {
@@ -35,13 +46,7 @@ export function useGetLayout() {
 		fetch(`${publicRuntimeConfig.API_URL}/api/csv/upload`, { method: 'POST', body: formDataValues })
 			.then(async response => {
 				const file = await response.blob()
-				const href = window.URL.createObjectURL(file);
-				const link = document.createElement('a');
-				link.href = href;
-				link.setAttribute('download', 'config.yaml'); //or any other extension
-				document.body.appendChild(link);
-				link.click();
-
+				setVS(file)
 				clearData()
 			})
 			.then(() => showSuccess(true))
@@ -54,6 +59,7 @@ export function useGetLayout() {
 		CSVData,
 		clearData,
 		sendData,
+		removeRedirection,
 		handleChangeRedirectionType,
 		redirectionType,
 		isSuccess,
@@ -62,6 +68,8 @@ export function useGetLayout() {
 		setFormData,
 		alert,
 		setAlert,
-		clearAlert
+		clearAlert,
+		virtualService,
+		setVS
 	}
 }

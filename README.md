@@ -17,12 +17,10 @@ Once generated, the file can either be added to your GitOps repository or downlo
 ## Coming features
 
 ### Server side
-- [ ] Check Virtual Service length to make sure it's not too long for the K8s API
 - [ ] Create a PR to a given repository when the Virtual Service as been created
 - [ ] Add Kubernetes files to be able to deploy the application in a cluster
 
 ### Front side
-- [ ] Allow user to remove a redirection on the UI before generating the Virtual Service
 - [ ] Show the csv syntaxe needed in input for the 2 kinds of redirections
 
 ### The UI for SEO Managers

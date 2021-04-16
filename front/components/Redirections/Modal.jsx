@@ -2,7 +2,17 @@ import { useLayoutContext } from '../../context/layout-context'
 
 const Modal = () => {
 
-    const { showSuccess } = useLayoutContext()
+    const { showSuccess, virtualService, setVS } = useLayoutContext()
+
+    const downloadFile = () => {
+        const href = window.URL.createObjectURL(virtualService);
+        const link = document.createElement('a');
+        link.href = href;
+        link.setAttribute('download', 'config.yaml');
+        document.body.appendChild(link);
+        link.click();
+        setVS(null)
+    }
 
     return (
         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -34,6 +44,11 @@ const Modal = () => {
                         </div>
                     </div>
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        {virtualService ? (
+                            <button onClick={() => downloadFile()} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-green-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-green-700 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                Download file
+                            </button>
+                        ) : null}
                         <button onClick={() => showSuccess(false)} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Close
                         </button>

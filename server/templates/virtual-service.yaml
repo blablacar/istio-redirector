@@ -7,27 +7,36 @@ metadata:
     app: istio-redirector
 spec:
   gateways:
-    - istio-system/istio-ilbgateway
-    - istio-system/istio-ingressgateway
+    {{- range $gateway := .Gateways}}
+    - {{ $gateway }}
+    {{- end }}
   hosts:
     {{- range $host := .Hosts}}
     - {{ $host }}
     {{- end }}
   http:
 {{- range $rule := .Rules}}
-  - route:
-    - destination:
-        host: "{{ $.DestinationRuleName }}"
-    match:
-    - uri:
-        exact: {{ $rule.From }}
-    {{- if (lt $rule.Code 400) }}
-    redirect:
-      uri: {{ $rule.To }}
-      redirectCode: {{ $rule.Code }}
-    {{- else }}
-    fault:
-      abort:
-        httpStatus: {{ $rule.Code }}
-    {{- end }}
+    - match:
+        - uri:
+            exact: {{ $rule.From }}
+      {{- if (lt $rule.Code 400) }}
+      redirect:
+        uri: {{ $rule.To }}
+        redirectCode: {{ $rule.Code }}
+      {{- else }}
+      fault:
+        abort:
+          httpStatus: {{ $rule.Code }}
+      route:
+        - destination:
+            host: "{{ $.DestinationRuleName }}"
+      {{- end }}
 {{ end }}
+    - match:
+        - uri:
+            regex: "{{ .DefaultMatchingRegexDestination }}"
+      route:
+        - destination:
+            host: {{ .DefaultDestinationHost }}
+            port:
+              number: 8080
