@@ -10,14 +10,13 @@ This project is still under developpement to improve the user experience. Howeve
 
 Istio redirector is a web application aims to ease your SEO redirections management at scale. Let your SEO managers handle all the redirections they want and get the output as a Istio Virtual Service.
 
-SEO managers use .csv files, that is why the form takes this kind of file as only input. Depending on the type of redirections needed (3xx or 4xx), the server will generate the adequate Virtual Service. 
+SEO managers use .csv files, that is why the form takes this kind of file as only input. Depending on the type of redirections needed (3xx or 4xx), the server will generate the adequate Virtual Service.
 
 Once generated, the file can either be added to your GitOps repository or downloaded to be manually applied on your cluster.
 
 ## Coming features
 
 ### Server side
-- [ ] Create a PR to a given repository when the Virtual Service as been created
 - [ ] Add Kubernetes files to be able to deploy the application in a cluster
 
 ### Front side
