@@ -3,7 +3,6 @@ package web
 import (
 	"encoding/json"
 	"istio-redirector/domain"
-	"istio-redirector/pkg/metrics"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -56,7 +55,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(h.staticPath)).ServeHTTP(w, r)
 }
 
-func Register(srvConfig domain.Config) *http.Server {
+func register(srvConfig domain.Config) *http.Server {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
@@ -64,11 +63,8 @@ func Register(srvConfig domain.Config) *http.Server {
 	})
 
 	router.HandleFunc("/api/csv/upload", UploadCSVHandler).Methods("POST")
-	router.HandleFunc("/api/url/check", CheckURL).Methods("GET")
 
 	router.Use(loggingMiddleware)
-
-	router = metrics.RegisterPrometheus(router)
 
 	spa := spaHandler{staticPath: "../front/out", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)

@@ -2,10 +2,8 @@ package redirections
 
 import (
 	"bytes"
-	"io/ioutil"
 	"istio-redirector/domain"
 	"istio-redirector/pkg/csv"
-	"istio-redirector/pkg/metrics"
 	"istio-redirector/pkg/redirections/istio"
 	"strconv"
 	"text/template"
@@ -15,23 +13,34 @@ import (
 )
 
 func Generate(inputData domain.InputData) (bytes.Buffer, error) {
-	const redirectionType string = "istio"
 
 	var istioConfig istio.Config
+	// Set the file name of the configurations file
+	viper.SetConfigName("config")
+	// Set the path to look for the configurations file
+	viper.AddConfigPath(".")
+	viper.SetConfigType("yaml")
+	if err := viper.ReadInConfig(); err != nil {
+		logs.WithE(err).Info("can't read config.yaml")
+	}
+
 	err := viper.Unmarshal(&istioConfig)
 	if err != nil {
 		logs.WithE(err).Info("unable to decode into struct")
 	}
 
 	r := istio.Redirections{
-		Name:                inputData.RedirectionName,
-		Namespace:           istioConfig.Istio.VirtualServiceNamespace,
-		DestinationRuleName: istioConfig.Istio.DestinationRule,
-		Hosts:               istioConfig.Istio.VirtualServiceHosts,
+		Name:                            inputData.RedirectionName,
+		Namespace:                       istioConfig.Istio.VirtualServiceNamespace,
+		DefaultDestinationHost:          istioConfig.Istio.VirtualServiceDefaultDestinationHost,
+		DefaultMatchingRegexDestination: istioConfig.Istio.VirtualServiceDefaultMatchingRegexDestination,
+		DestinationRuleName:             istioConfig.Istio.DestinationRule,
+		Hosts:                           istioConfig.Istio.VirtualServiceHosts,
+		Gateways:                        istioConfig.Istio.VirtualServiceGateways,
 	}
 
-	byteContainer, err := ioutil.ReadAll(inputData.File)
-	rulesCSV := csv.ReadFile(byteContainer)
+	//byteContainer, err := ioutil.ReadAll(inputData.File)
+	rulesCSV := csv.ReadFile(inputData.File)
 	for _, rule := range rulesCSV {
 		var data domain.Rule
 		if inputData.RedirectionType == "3xx" {
@@ -69,7 +78,11 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		return payload, err
 	}
 
-	metrics.CSVFileImported.Inc()
+	_, err = istio.Validate(&payload)
+	if err != nil {
+		logs.WithE(err).Error("fail to validate template as VirtualService")
+		return payload, err
+	}
 
 	return payload, nil
 }

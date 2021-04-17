@@ -1,0 +1,26 @@
+[
+    {
+        "question": "What is Istio redirector ?",
+        "answer": "lorem"
+    },
+    {
+        "question": "Who should use this tool ?",
+        "answer": "coucou"
+    },
+    {
+        "question": "How does it works ?",
+        "answer": "coucou"
+    },
+    {
+        "question": "Is it free to use ?",
+        "answer": "Istio redirector is free to use and under MIT licence. You can help us improve the tool by making Pull Requests. You can also deploy Istio redirector on your own environment by building the Docker image."
+    },
+    {
+        "question": "Could we support more services (Nginx, Apache,...) ?",
+        "answer": "Why not! As this tool mainly target Istio, it is easy to add more services. You can create a PR to add more templates like <a href=\"https://github.com/etifontaine/istio-redirector/blob/main/server/templates/virtual-service.yaml\" target=\"_blank\" class=\"underline\">this one</a>."
+    },
+    {
+        "question": "Can I help to improve the tool ?",
+        "answer": "Sure! You can contribute directly on the <a href=\"https://github.com/etifontaine/istio-redirector\" target=\"_blank\" class=\"underline\">GitHub Repository</a>. Feel free to watch the open issues or propose new features."
+    }
+]

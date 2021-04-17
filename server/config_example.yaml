@@ -1,0 +1,21 @@
+server:
+  URL: "localhost:8080"
+  allowedOrigins:
+    - "http://localhost:3000" # Next.js dev server
+    - "http://localhost:8080" # Go Web server once built
+
+istio:
+  destinationRule: "example.default.svc.cluster.local"
+  virtualServiceNamespace: "default"
+  virtualServiceDefaultDestinationHost: "example.default.svc.cluster.local"
+  virtualServiceDefaultMatchingRegexDestination: "/test($|/.*)"
+  VirtualServiceGateways:
+    - istio-system/istio-ingressgateway
+  virtualServiceHosts:
+    - "example.com"
+
+github:
+  token: my_secret_token
+  owner: example
+  repo: "istio-redirector"
+  branch: "test"

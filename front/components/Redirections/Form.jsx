@@ -3,7 +3,7 @@ import { useLayoutContext } from '../../context/layout-context'
 
 const Form = () => {
 
-    const { setCSVFile, setCSVData, handleChangeRedirectionType, redirectionType, setFormData, CSVData } = useLayoutContext()
+    const { setCSVFile, setCSVData, handleChangeRedirectionType, redirectionType, setFormData, CSVData, setAlert } = useLayoutContext()
 
     const handleChange = (event) => {
         switch (event.target.name) {
@@ -26,6 +26,10 @@ const Form = () => {
     }
 
     const showCSV = (result) => {
+        if (result.data.length > 5000) {
+            setAlert({ isVisible: true, content: 'You can\'t add more than 5 000 redirections at once' })
+            return
+        }
         setCSVData(result.data)
     }
 

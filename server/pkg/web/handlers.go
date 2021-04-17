@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"istio-redirector/domain"
@@ -19,9 +20,14 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	buf := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buf, file); err != nil {
+		return
+	}
+
 	payload, err := redirections.Generate(
 		domain.InputData{
-			File:            file,
+			File:            buf.Bytes(),
 			RedirectionName: r.FormValue("redirection_name"),
 			RedirectionType: r.FormValue("redirection_type"),
 		},
@@ -40,30 +46,4 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 
 	//stream the body to the client without fully loading it into memory
 	io.Copy(w, &payload)
-}
-
-func CheckURL(w http.ResponseWriter, r *http.Request) {
-	urlParams := r.URL.Query()
-	url := urlParams["url"][0]
-	if len(urlParams) == 0 || url == "" {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("url parameter is missing"))
-		return
-	}
-
-	client := &http.Client{}
-
-	_, err := client.Head(url)
-
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("url parameter is missing"))
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	return
 }
