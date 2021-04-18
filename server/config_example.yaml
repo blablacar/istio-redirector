@@ -18,4 +18,4 @@ github:
   token: my_secret_token
   owner: example
   repo: "istio-redirector"
-  branch: "test"
+  baseBranchName: "test"

@@ -46,7 +46,7 @@ COPY --from=server /usr/src/server/config.yaml .
 COPY --from=server /usr/src/server/templates/ ./templates
 
 EXPOSE 8080
-CMD ["/app"]
+CMD ["/app web"]
 
 LABEL name="istio-redirector"
 LABEL version_auto_semver="true"

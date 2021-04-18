@@ -2,11 +2,14 @@ package web
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"istio-redirector/domain"
+	"istio-redirector/pkg/github"
 	"istio-redirector/pkg/redirections"
 	"net/http"
+	"strconv"
 
 	"github.com/n0rad/go-erlog/logs"
 )
@@ -36,6 +39,19 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
+		return
+	}
+
+	pushGithub, err := strconv.ParseBool(r.FormValue("pushGithub"))
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if pushGithub {
+		prURL := github.Create(payload.Bytes(), r.FormValue("redirection_name"))
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"PR": prURL})
 		return
 	}
 

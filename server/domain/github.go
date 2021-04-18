@@ -5,8 +5,8 @@ type GithubConfig struct {
 }
 
 type Github struct {
-	Token string
-	Repo string
-	Owner string
-	Branch string
+	Token          string
+	Repo           string
+	Owner          string
+	BaseBranchName string
 }
