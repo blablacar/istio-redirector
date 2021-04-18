@@ -7,7 +7,7 @@ export function useGetLayout() {
   const [redirectionType, setRedirectionType] = useState("");
   const [isSuccess, showSuccess] = useState(false);
   const [CSVFile, setCSVFile] = useState();
-  const [formData, setFormData] = useState({ pushGithub: false });
+  const [formData, setFormData] = useState({ pushGithub: false, redirection_env: "" });
   const [alert, setAlert] = useState({ isVisible: false });
   const [CSVData, setCSVData] = useState([]);
   const [virtualService, setVS] = useState();
@@ -42,6 +42,7 @@ export function useGetLayout() {
     const formDataValues = new FormData();
     formDataValues.append("csv_file", CSVFile);
     formDataValues.append("redirection_name", formData.redirection_name);
+    formDataValues.append("redirection_env", formData.redirection_env);
     formDataValues.append("redirection_type", redirectionType);
     formDataValues.append("pushGithub", formData.pushGithub);
     fetch(`${publicRuntimeConfig.API_URL}/api/csv/upload`, { method: "POST", body: formDataValues })

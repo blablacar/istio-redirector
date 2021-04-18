@@ -18,6 +18,9 @@ const Form = () => {
       case "redirection_name":
         setFormData({ ...formData, redirection_name: event.target.value });
         break;
+      case "redirection_env":
+        setFormData({ ...formData, redirection_env: event.target.value });
+        break;
 
       case "file-upload":
         setCSVFile(event.target.files[0]);
@@ -45,7 +48,7 @@ const Form = () => {
       <div>
         <div className="px-4 py-5 bg-white sm:p-6">
           <div className="grid grid-cols-6 gap-6">
-            <div className="col-span-6 sm:col-span-3">
+            <div className="col-span-4 sm:col-span-2">
               <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
                 Redirection type
               </label>
@@ -63,9 +66,27 @@ const Form = () => {
                 <option value="4xx">4xx</option>
               </select>
             </div>
-            <div className="col-span-6 sm:col-span-3">
+            <div className="col-span-4 sm:col-span-2">
+              <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
+                Environment
+              </label>
+              <select
+                onChange={handleChange}
+                value={formData.redirection_env}
+                id="redirection_env"
+                name="redirection_env"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled defaultValue={""}>
+                  Select your option
+                </option>
+                <option value="preprod">preprod</option>
+                <option value="prod">prod</option>
+              </select>
+            </div>
+            <div className="col-span-4 sm:col-span-2">
               <label htmlFor="redirection_name" className="block text-sm font-medium text-gray-700">
-                Redirection group name <small>(It will be the name of the ressource in the cluster)</small>
+                Redirection group name
               </label>
               <input
                 onChange={handleChange}
@@ -86,15 +107,19 @@ const Form = () => {
               <p className="text-gray-500 my-1">
                 {redirectionType === "3xx" ? (
                   <>
-                    <strong>Expected .csv file format: </strong><span>from,to,status</span>
+                    <strong>Expected .csv file format: </strong>
+                    <span>from,to,status</span>
                     <br />
-                    <strong>Example: </strong><span>/my-page,/my-new-page,301</span>
+                    <strong>Example: </strong>
+                    <span>/my-page,/my-new-page,301</span>
                   </>
                 ) : (
-                    <>
-                    <strong>Expected .csv file format: </strong><span>url,status</span>
+                  <>
+                    <strong>Expected .csv file format: </strong>
+                    <span>url,status</span>
                     <br />
-                    <strong>Example: </strong><span>/my-page,410</span>
+                    <strong>Example: </strong>
+                    <span>/my-page,410</span>
                   </>
                 )}
               </p>

@@ -16,6 +16,7 @@ istio:
 
 github:
   token: my_secret_token
+  email: "test@example.com"
   owner: example
   repo: "istio-redirector"
   baseBranchName: "test"
