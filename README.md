@@ -19,9 +19,6 @@ Once generated, the file can either be added to your GitOps repository or downlo
 ### Server side
 - [ ] Add Kubernetes files to be able to deploy the application in a cluster
 
-### Front side
-- [ ] Show the csv syntaxe needed in input for the 2 kinds of redirections
-
 ### The UI for SEO Managers
 
 ![Homepage](https://github.com/etifontaine/istio-redirector/blob/main/.github/images/homepage.png?raw=true)

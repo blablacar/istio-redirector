@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func Create(fileContent []byte, prName string) string {
+func Create(fileContent []byte, prName string, gitPath string) string {
 	var gitHubConfig domain.GithubConfig
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
@@ -59,9 +59,9 @@ func Create(fileContent []byte, prName string) string {
 		Message:   github.String("[istio-redirector] New config redirection "),
 		Content:   fileContent,
 		Branch:    newRef.Ref,
-		Committer: &github.CommitAuthor{Name: github.String("istio-redirector Bot"), Email: github.String("etienne.fontaine1@gmail.com")},
+		Committer: &github.CommitAuthor{Name: github.String("istio-redirector Bot"), Email: github.String(gitHubConfig.Github.Email)},
 	}
-	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "server/"+prName+".yaml", opts)
+	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, gitPath+"/"+prName+".yaml", opts)
 	if errCreateFile != nil {
 		fmt.Println(errCreateFile)
 		return ""
