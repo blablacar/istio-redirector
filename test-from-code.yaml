@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: test
+  namespace: default
+  labels:
+    app: istio-redirector
+spec:
+  gateways:
+    - istio-system/istio-ingressgateway
+  hosts:
+    - example.com
+  http:
+    - match:
+        - uri:
+            exact: https://www.domain.example/1
+      fault:
+        abort:
+          httpStatus: 410
+      route:
+        - destination:
+            host: "example.default.svc.cluster.local"
+
+    - match:
+        - uri:
+            exact: https://www.domain.example/2
+      fault:
+        abort:
+          httpStatus: 410
+      route:
+        - destination:
+            host: "example.default.svc.cluster.local"
+
+    - match:
+        - uri:
+            regex: "/test($|/.*)"
+      route:
+        - destination:
+            host: example.default.svc.cluster.local
+            port:
+              number: 8080
