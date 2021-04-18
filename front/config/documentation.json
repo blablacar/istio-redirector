@@ -1,15 +1,15 @@
 [
     {
         "question": "What is Istio redirector ?",
-        "answer": "lorem"
+        "answer": "Istio redirector is a tool that aims to help you to create a large amount of redirections for your Kubernetes Cluster based on Istio. It can be very useful to handle SEO request during a migration."
     },
     {
         "question": "Who should use this tool ?",
-        "answer": "coucou"
+        "answer": "This UI is made for SEO managers. You can easily import your .csv file with your redirections and get a Istio Virtual Service that you can give to your developers or AdminSys."
     },
     {
         "question": "How does it works ?",
-        "answer": "coucou"
+        "answer": "The .csv file is sent to the Go API HTTP server. The server will parse the file and use a Go Template to convert it to a valid Istio Virtual Service."
     },
     {
         "question": "Is it free to use ?",

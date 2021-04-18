@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func Create() {
+func Create(fileContent []byte, prName string) string {
 	var gitHubConfig domain.GithubConfig
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
@@ -31,52 +31,54 @@ func Create() {
 	ctx := context.Background()
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: config.Github.Token},
+		&oauth2.Token{AccessToken: gitHubConfig.Github.Token},
 	)
-	logs.Info(config.Github.Token)
 	tc := oauth2.NewClient(ctx, ts)
 
 	client := github.NewClient(tc)
 
 	// Get main branch as reference
-	baseRef, _, err := client.Git.GetRef(ctx, config.Github.Owner, config.Github.Repo, "refs/heads/main")
+	baseRef, _, err := client.Git.GetRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "refs/heads/main")
 	if err != nil {
 		logs.Errorf("Git.GetRef returned error: %v", err)
 	}
 	logs.Infof("%v", baseRef)
 
-  // Create new branch from main
-	newRef := &github.Reference{Ref: github.String("refs/heads/"+config.Github.Branch), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
-	ref, _, err := client.Git.CreateRef(ctx, config.Github.Owner, config.Github.Repo, newRef)
+
+	newBranchName := gitHubConfig.Github.BaseBranchName +"/"+ prName
+	// Create new branch from main
+	newRef := &github.Reference{Ref: github.String("refs/heads/" +newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
+	ref, _, err := client.Git.CreateRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newRef)
 	if err != nil {
 		logs.Errorf("Git.CreateRef returned error: %v", err)
 	}
-	logs.Info("%v", ref.GetURL())
+	logs.Infof("%v", ref.GetURL())
 
-  // Add new content to new branch
-	fileContent := []byte("This is the content of my file\nand the 2nd line of it")
+	// Add new content to new branch
 	opts := &github.RepositoryContentFileOptions{
-		Message:   github.String("This is my commit message"),
+		Message:   github.String("[istio-redirector] New config redirection "),
 		Content:   fileContent,
-		Branch:    github.String(config.Github.Branch),
+		Branch:    newRef.Ref,
 		Committer: &github.CommitAuthor{Name: github.String("istio-redirector Bot"), Email: github.String("etienne.fontaine1@gmail.com")},
 	}
-	_, _, errCreateFile := client.Repositories.CreateFile(ctx, config.Github.Owner, config.Github.Repo, "test-from-code-2.yaml", opts)
+	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "server/"+prName+".yaml", opts)
 	if errCreateFile != nil {
 		fmt.Println(errCreateFile)
-		return
+		return ""
 	}
 
 	// Create PR from new branch to main
 	newPR := &github.NewPullRequest{
-		Title:               github.String("new test from code"),
-		Head:                github.String(config.Github.Branch),
+		Title:               github.String("[istio-redirector][bot] " + prName),
+		Head:                opts.Branch,
 		Base:                github.String("main"),
-		Body:                github.String("New content for istio-redirection"),
+		Body:                github.String("New content for istio-redirector"),
 		MaintainerCanModify: github.Bool(true),
 	}
-	_, _, errCreatePr := client.PullRequests.Create(ctx, config.Github.Owner, config.Github.Repo, newPR)
+	prRes, _, errCreatePr := client.PullRequests.Create(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newPR)
 	if errCreatePr != nil {
 		logs.Errorf("PullRequests.Create returned error: %v", errCreatePr)
 	}
+
+	return prRes.GetHTMLURL()
 }

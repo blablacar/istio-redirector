@@ -17,4 +17,5 @@ jobs:
     - name: Test
       run: |
         cd server
+        mv config_example.yaml config.yaml
         go test -v -cover -covermode=atomic ./...
