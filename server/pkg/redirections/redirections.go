@@ -2,10 +2,14 @@ package redirections
 
 import (
 	"bytes"
+	"fmt"
 	"istio-redirector/domain"
 	"istio-redirector/pkg/csv"
 	"istio-redirector/pkg/redirections/istio"
+	"istio-redirector/utils"
+	"net/url"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"github.com/n0rad/go-erlog/logs"
@@ -35,35 +39,52 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		DefaultDestinationHost:          istioConfig.Istio.VirtualServiceDefaultDestinationHost,
 		DefaultMatchingRegexDestination: istioConfig.Istio.VirtualServiceDefaultMatchingRegexDestination,
 		DestinationRuleName:             istioConfig.Istio.DestinationRule,
-		Hosts:                           istioConfig.Istio.VirtualServiceHosts,
 		Gateways:                        istioConfig.Istio.VirtualServiceGateways,
 	}
 
 	//byteContainer, err := ioutil.ReadAll(inputData.File)
 	rulesCSV := csv.ReadFile(inputData.File)
+	var hosts []string
+
 	for _, rule := range rulesCSV {
 		var data domain.Rule
+
+		u, err := url.Parse(rule[0])
+		if err != nil {
+			panic(err)
+		}
+
+		hosts = append(hosts, u.Host)
+
+		toRemove := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
+		from := strings.ReplaceAll(rule[0], toRemove, "")
+
 		if inputData.RedirectionType == "3xx" {
 			code, err := strconv.Atoi(rule[2])
 			if err != nil {
 				logs.WithE(err).Error("fail to parse line")
 				break
 			}
+			to := strings.ReplaceAll(rule[1], toRemove, "")
+			if to == "" {to = "/"}
 			data = domain.Rule{
-				From: rule[0],
-				To:   rule[1],
+				From: from,
+				To:   to,
 				Code: code,
 			}
 		} else {
 			code, _ := strconv.Atoi(rule[1])
 			data = domain.Rule{
-				From: rule[0],
+				From: from,
 				Code: code,
 			}
 		}
 
 		r.Rules = append(r.Rules, data)
 	}
+
+	// TODO: if len(hosts) > 0, create a VS for each hosts
+	r.Hosts = utils.RemoveDuplicates(hosts)
 
 	var payload bytes.Buffer
 	t, err := template.ParseFiles("templates/virtual-service.yaml")
