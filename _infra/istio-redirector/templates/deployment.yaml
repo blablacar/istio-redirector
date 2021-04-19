@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+    helm.sh/chart: {{ include "istio-redirector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: {{ .Release.Name }}
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+        app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ .Release.Name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ .Release.Name }}
+      annotations:
+        json_logs: "true"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: {{ .Values.nodeAffinity.key }}
+                operator: Exists
+            weight: 100
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+            weight: 50
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+              topologyKey: topology.kubernetes.io/zone
+            weight: 100
+      containers:
+      - name: istio-redirector
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
+        ports:
+          - name: http
+            containerPort: {{ .Values.port }}
+            protocol: TCP
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        env:
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              containerName: istio-redirector
+              resource: limits.cpu
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+{{- if .Values.volumeMounts }}
+        volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 10 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+{{- end }}
+      securityContext:
+        fsGroup: 17918
+        runAsUser: 17918
+      serviceAccountName: {{ .Release.Name }}
+{{- if .Values.volumes }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+{{- end }}

@@ -64,24 +64,26 @@ export default function Redirections() {
                       Send
                     </button>
                   </span>
-                  <div className="sm:ml-3 mt-1 flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="pushGithub"
-                        name="pushGithub"
-                        type="checkbox"
-                        onChange={(e) => {
-                          setFormData({ ...formData, pushGithub: e.target.checked });
-                        }}
-                        className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                      />
+                  {process.env.GITHUB_ENABLED ? (
+                    <div className="sm:ml-3 mt-1 flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="pushGithub"
+                          name="pushGithub"
+                          type="checkbox"
+                          onChange={(e) => {
+                            setFormData({ ...formData, pushGithub: e.target.checked });
+                          }}
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor="pushGithub" className="font-medium text-gray-700">
+                          Push to GitHub
+                        </label>
+                      </div>
                     </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="pushGithub" className="font-medium text-gray-700">
-                        Push to GitHub
-                      </label>
-                    </div>
-                  </div>
+                  ) : null}
                 </div>
               </div>
             ) : null}

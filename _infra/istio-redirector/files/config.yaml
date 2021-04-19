@@ -1,0 +1,14 @@
+server:
+  URL: {{ .Values.istioRedirectorConfig.server.URL }}
+  allowedOrigins:
+    {{- toYaml .Values.istioRedirectorConfig.server.allowedOrigins | nindent 4 }}
+
+istio:
+  {{- toYaml .Values.istioRedirectorConfig.istio | nindent 2 }}
+
+github:
+  token: {{ .Values.github.token }}
+  email: {{ .Values.github.email }}
+  owner: {{ .Values.github.owner }}
+  repo: {{ .Values.github.repo }}
+  baseBranchName: {{ .Values.github.baseBranchName }}

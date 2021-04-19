@@ -1,0 +1,95 @@
+---
+
+autoscaling:
+  minReplicas: 3
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 90
+
+image:
+  repository: eu.gcr.io/my-registry/istio-redirector
+  tag: v0.0.1
+  pullPolicy: IfNotPresent
+
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  failureThreshold: 1
+  successThreshold: 1
+  timeoutSeconds: 5
+  httpGet:
+    path: /api/health
+    port: 8080
+
+pdb: 1
+
+port: 8080
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+  timeoutSeconds: 5
+  httpGet:
+    path: /api/health
+    port: 8080
+
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+tolerations:
+- key: cloud.google.com/gke-preemptible
+  operator: Equal
+  value: "true"
+  effect: NoSchedule
+
+nodeAffinity:
+  key: cloud.google.com/gke-preemptible
+
+virtualService:
+  enabled: true
+  destinationSuffix: svc.cluster.local
+
+destinationRule:
+  enabled: true
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+
+volumes:
+  - name: config
+    configMap:
+      name: istio-redirector
+
+volumeMounts:
+  - name: config
+    mountPath: /config.yaml
+    subPath: config.yaml
+    readOnly: true
+
+github:
+  token: my_token
+  email: "bot_email"
+  owner: my_repo_owner
+  repo: "istio-redirector"
+  baseBranchName: "istio-redirector"
+
+istioRedirectorConfig:
+  server:
+    URL: "0.0.0.0:8080"
+    allowedOrigins:
+      - "http://localhost:8080" # Go Web server once built
+
+  istio:
+    destinationRule: "example.default.svc.cluster.local"
+    virtualServiceNamespace: "default"
+    virtualServiceDefaultDestinationHost: "example.default.svc.cluster.local"
+    virtualServiceDefaultMatchingRegexDestination: "/test($|/.*)"
+    VirtualServiceGateways:
+      - istio-system/istio-ingressgateway
+    virtualServiceHosts:
+      - "example.com"

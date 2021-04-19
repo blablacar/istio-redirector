@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+    helm.sh/chart: {{ include "istio-redirector.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app: {{ .Release.Name }}
+spec:
+  jobLabel: app
+  endpoints:
+  - port: http
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app: {{ .Release.Name }}

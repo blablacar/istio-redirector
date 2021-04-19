@@ -42,11 +42,11 @@ FROM gcr.io/distroless/base
 
 COPY --from=front /usr/src/front/out ../front/out
 COPY --from=server /usr/src/server/app .
-COPY --from=server /usr/src/server/config.yaml .
+COPY --from=server /usr/src/server/config_example.yaml .
 COPY --from=server /usr/src/server/templates/ ./templates
 
 EXPOSE 8080
-CMD ["/app web"]
+CMD ["/app", "web"]
 
 LABEL name="istio-redirector"
 LABEL version_auto_semver="true"
