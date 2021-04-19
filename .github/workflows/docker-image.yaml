@@ -2,18 +2,16 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+    - '*'
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
+    - name: Extract Git Tag
+      run: echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
     - name: docker login
       env:
         DOCKER_USER: ${{secrets.DOCKER_USER}}
@@ -21,7 +19,11 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag etifontaine/istio-redirector:$(date +%s)
+      env:
+        IMAGE_TAG: ${{ env.GIT_TAG }}
+      run: docker build . --file Dockerfile --tag etifontaine/istio-redirector:$IMAGE_TAG
 
     - name: Docker Push
-      run: docker push etifontaine/istio-redirector
+      env:
+        IMAGE_TAG: ${{ env.GIT_TAG }}
+      run: docker push etifontaine/istio-redirector:$IMAGE_TAG
