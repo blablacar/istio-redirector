@@ -1,5 +1,8 @@
 import Papa from "papaparse";
+import getConfig from "next/config";
 import { useLayoutContext } from "../../context/layout-context";
+
+const { publicRuntimeConfig } = getConfig();
 
 const Form = () => {
   const {
@@ -80,8 +83,9 @@ const Form = () => {
                 <option value="" disabled defaultValue={""}>
                   Select your option
                 </option>
-                <option value="preprod">preprod</option>
-                <option value="prod">prod</option>
+                {JSON.parse(publicRuntimeConfig.GITHUB_ENV_NAMES_AVAILABLE).map((env) => {
+                  return <option key={env} value={env}>{env}</option>;
+                })}
               </select>
             </div>
             <div className="col-span-4 sm:col-span-2">
