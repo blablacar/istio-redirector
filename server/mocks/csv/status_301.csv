@@ -1,2 +1,2 @@
-https://istio-redirector.staging-1.blbl.cr/a,https://istio-redirector.staging-1.blbl.cr,301
-https://istio-redirector.staging-1.blbl.cr/a,https://istio-redirector.staging-1.blbl.cr,301
+https://www.domain.example/a,https://www.google.com,301
+https://www.domain.example/c,https://www.gooogle.com,301

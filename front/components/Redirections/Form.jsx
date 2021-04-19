@@ -83,8 +83,12 @@ const Form = () => {
                 <option value="" disabled defaultValue={""}>
                   Select your option
                 </option>
-                {JSON.parse(publicRuntimeConfig.GITHUB_ENV_NAMES_AVAILABLE).map((env) => {
-                  return <option key={env} value={env}>{env}</option>;
+                {publicRuntimeConfig.GITHUB_ENV_NAMES_AVAILABLE.map((env) => {
+                  return (
+                    <option key={env} value={env}>
+                      {env}
+                    </option>
+                  );
                 })}
               </select>
             </div>
