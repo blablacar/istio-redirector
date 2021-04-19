@@ -1,7 +1,9 @@
 import Form from "./Form";
+import getConfig from "next/config";
 import { useLayoutContext } from "../../context/layout-context";
 import Table from "./Table";
 import Modal from "./Modal";
+const { publicRuntimeConfig } = getConfig();
 
 export default function Redirections() {
   const { CSVData, clearData, sendData, isSuccess, setFormData, formData } = useLayoutContext();
@@ -64,7 +66,7 @@ export default function Redirections() {
                       Send
                     </button>
                   </span>
-                  {process.env.GITHUB_ENABLED ? (
+                  {publicRuntimeConfig.GITHUB_ENABLED ? (
                     <div className="sm:ml-3 mt-1 flex items-start">
                       <div className="flex items-center h-5">
                         <input
