@@ -44,10 +44,9 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 	}
 	logs.Infof("%v", baseRef)
 
-
-	newBranchName := gitHubConfig.Github.BaseBranchName +"/"+ prName
+	newBranchName := gitHubConfig.Github.BaseBranchName + "/" + prName
 	// Create new branch from main
-	newRef := &github.Reference{Ref: github.String("refs/heads/" +newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
+	newRef := &github.Reference{Ref: github.String("refs/heads/" + newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
 	ref, _, err := client.Git.CreateRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newRef)
 	if err != nil {
 		logs.Errorf("Git.CreateRef returned error: %v", err)

@@ -34,6 +34,7 @@ spec:
             host: "{{ $.DestinationRuleName }}"
       {{- end }}
 {{ end }}
+{{- if .DefaultMatchingRegexDestination }}
     - match:
         - uri:
             regex: "{{ .DefaultMatchingRegexDestination }}"
@@ -42,3 +43,4 @@ spec:
             host: {{ .DefaultDestinationHost }}
             port:
               number: 8080
+{{ end }}
