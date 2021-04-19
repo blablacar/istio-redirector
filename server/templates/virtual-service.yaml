@@ -5,6 +5,8 @@ metadata:
   namespace: {{ .Namespace }}
   labels:
     app: istio-redirector
+  annotations:
+    fluxcd.io/ignore: 'true'
 spec:
   gateways:
     {{- range $gateway := .Gateways}}
