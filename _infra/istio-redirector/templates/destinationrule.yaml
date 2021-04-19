@@ -1,0 +1,18 @@
+{{- if .Values.destinationRule.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+{{- if .Values.destinationRule.trafficPolicy }}
+  trafficPolicy:
+    {{- toYaml .Values.destinationRule.trafficPolicy | nindent 4 }}
+{{- end }}
+{{- if .Values.destinationRule.subsets }}
+  subsets:
+    {{- toYaml .Values.destinationRule.subsets | nindent 4 }}
+{{- end }}
+{{- end }}

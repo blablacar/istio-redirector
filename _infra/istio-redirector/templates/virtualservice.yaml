@@ -1,0 +1,15 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  hosts:
+  -  {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host:  {{ .Release.Name }}.{{ .Release.Namespace }}.{{ .Values.virtualService.destinationSuffix }}
+{{- end }}

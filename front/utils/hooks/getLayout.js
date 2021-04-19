@@ -45,7 +45,7 @@ export function useGetLayout() {
     formDataValues.append("redirection_env", formData.redirection_env);
     formDataValues.append("redirection_type", redirectionType);
     formDataValues.append("pushGithub", formData.pushGithub);
-    fetch(`${publicRuntimeConfig.API_URL}/api/csv/upload`, { method: "POST", body: formDataValues })
+    fetch(`${publicRuntimeConfig.API_URL}api/csv/upload`, { method: "POST", body: formDataValues })
       .then(async (response) => {
         const contentType = response.headers.get("content-type");
         if (contentType === "application/json") {

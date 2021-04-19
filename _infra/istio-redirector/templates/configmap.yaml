@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+data:
+  config.yaml: |+
+    {{- tpl (.Files.Get "files/config.yaml") . | nindent 4 }}
+
+
