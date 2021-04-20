@@ -1,8 +1,8 @@
 * Getting started
 
-  * [What is this ?](readme.md?id=what-is-this)
-  * [Technos](readme.md?id=techno)
-  * [Features](readme.md?id=features)
+  * [What is this ?](?id=what-is-this)
+  * [Technos](?id=techno)
+  * [Features](?id=features)
 
 * Local dev
   * [Setup](dev/setup.md)
