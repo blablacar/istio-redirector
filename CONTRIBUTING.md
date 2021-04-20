@@ -55,7 +55,7 @@ Unsure where to begin contributing to Istio redirector? You can start by looking
 - **main**: PR Base branch.
 
 #### Commit
-Follow our [commit message conventions](./docs/COMMIT_MESSAGE_CONVENTION.md).
+Follow our [commit message conventions](./.github/docs/COMMIT_MESSAGE_CONVENTION.md).
 
 ### Yes! Pull request
 Make your pull request, then describe your changes.
@@ -71,7 +71,7 @@ Follow other PR title format on below.
 
 #### Description
 If it has related to issues, add links to the issues(like `#123`) in the description.
-Fill in the [Pull Request Template](./docs/PULL_REQUEST_TEMPLATE.md) by check your case.
+Fill in the [Pull Request Template](./.github/docs/PULL_REQUEST_TEMPLATE.md) by check your case.
 
 ## Code of Conduct
 This project and everyone participating in it is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.

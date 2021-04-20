@@ -1,0 +1,62 @@
+---
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: istio-redirector
+  namespace: default
+  annotations:
+    fluxcd.io/tag.chart-image: glob:1.*
+    fluxcd.io/automated: 'true'
+spec:
+  releaseName: istio-redirector
+  chart:
+    git: git@github.com:etifontaine/istio-redirector.git
+    ref: v0.0.3
+    path: _infra/istio-redirector
+  values:
+    image:
+      repository: etifontaine/istio-redirector
+      tag: v0.0.3
+
+    github:
+      token: my_token # Should be included from a secret
+      email: "istio-redirector-bot"
+      owner: my_owner
+      repo: "my_gitops_repo"
+      baseBranchName: "istio-redirector"
+
+    istioRedirectorConfig:
+      server:
+        URL: "0.0.0.0:8080"
+        allowedOrigins:
+          - "http://0.0.0.0:8080" # Go Web server once built
+
+      istio:
+        destinationRule: "istio-redirector.default.svc.cluster.local"
+        virtualServiceNamespace: "default"
+        virtualServiceDefaultDestinationHost: "istio-redirector.default.svc.cluster.local"
+        virtualServiceDefaultMatchingRegexDestination: "/blog($|/.*)"
+        VirtualServiceGateways:
+          - istio-system/istio-ingressgateway
+        virtualServiceHosts:
+          - "istio-redirector.default-1.blbl.cr"
+
+  rollback:
+    # https://docs.fluxcd.io/projects/helm-operator/en/latest/references/helmrelease-custom-resource.html#rollbacks
+    # If set, will perform automatic rollbacks for this release.
+    # When enabled, the Helm operator will detect a faulty upgrade
+    # and perform a rollback, it will not attempt a new upgrade
+    # unless it detects a change in values and/or the chart.
+    enable: true
+    # If set, will force resource update through delete/recreate if
+    # needed.
+    force: false
+    # Prevent hooks from running during rollback.
+    disableHooks: false
+    # Time in seconds to wait for any individual Kubernetes operation.
+    timeout: 300
+    # If set, will wait until all Pods, PVCs, Services, and minimum
+    # number of Pods of a Deployment are in a ready state before
+    # marking the release as successful. It will wait for as long
+    # as the set timeout.
+    wait: false
