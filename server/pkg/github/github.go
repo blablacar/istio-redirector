@@ -38,13 +38,13 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 	client := github.NewClient(tc)
 
 	// Get main branch as reference
-	baseRef, _, err := client.Git.GetRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "refs/heads/main")
+	baseRef, _, err := client.Git.GetRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "refs/heads/"+gitHubConfig.Github.BaseRef)
 	if err != nil {
 		logs.Errorf("Git.GetRef returned error: %v", err)
 	}
 	logs.Infof("%v", baseRef)
 
-	newBranchName := gitHubConfig.Github.BaseBranchName + "/" + prName
+	newBranchName := gitHubConfig.Github.NewBranchPrefix + "/" + prName
 	// Create new branch from main
 	newRef := &github.Reference{Ref: github.String("refs/heads/" + newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
 	ref, _, err := client.Git.CreateRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newRef)
@@ -55,7 +55,7 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 
 	// Add new content to new branch
 	opts := &github.RepositoryContentFileOptions{
-		Message:   github.String("[istio-redirector] New config redirection "),
+		Message:   github.String("[istio-redirector] New redirections"),
 		Content:   fileContent,
 		Branch:    newRef.Ref,
 		Committer: &github.CommitAuthor{Name: github.String("istio-redirector Bot"), Email: github.String(gitHubConfig.Github.Email)},
@@ -70,8 +70,8 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 	newPR := &github.NewPullRequest{
 		Title:               github.String("[istio-redirector][bot] " + prName),
 		Head:                opts.Branch,
-		Base:                github.String("main"),
-		Body:                github.String("New content for istio-redirector"),
+		Base:                github.String(gitHubConfig.Github.BaseRef),
+		Body:                github.String("New content from istio-redirector"),
 		MaintainerCanModify: github.Bool(true),
 	}
 	prRes, _, errCreatePr := client.PullRequests.Create(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newPR)

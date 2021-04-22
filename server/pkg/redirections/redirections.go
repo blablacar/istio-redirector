@@ -19,6 +19,7 @@ import (
 func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 
 	var istioConfig istio.Config
+	var payload bytes.Buffer
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
 	// Set the path to look for the configurations file
@@ -35,14 +36,13 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 
 	r := istio.Redirections{
 		Name:                            inputData.RedirectionName,
-		Namespace:                       istioConfig.Istio.VirtualServiceNamespace,
-		DefaultDestinationHost:          istioConfig.Istio.VirtualServiceDefaultDestinationHost,
-		DefaultMatchingRegexDestination: istioConfig.Istio.VirtualServiceDefaultMatchingRegexDestination,
+		Namespace:                       istioConfig.Istio.Namespace,
+		DefaultDestinationHost:          istioConfig.Istio.DefaultDestinationHost,
+		DefaultMatchingRegexDestination: istioConfig.Istio.FallbackMatchingRegex,
 		DestinationRuleName:             istioConfig.Istio.DestinationRule,
-		Gateways:                        istioConfig.Istio.VirtualServiceGateways,
+		Gateways:                        istioConfig.Istio.Gateways,
 	}
 
-	//byteContainer, err := ioutil.ReadAll(inputData.File)
 	rulesCSV := csv.ReadFile(inputData.File)
 	var hosts []string
 
@@ -56,8 +56,8 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 
 		hosts = append(hosts, u.Host)
 
-		toRemove := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-		from := strings.ReplaceAll(rule[0], toRemove, "")
+		toRemoveFrom := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
+		from := strings.ReplaceAll(rule[0], toRemoveFrom, "")
 
 		if inputData.RedirectionType == "3xx" {
 			code, err := strconv.Atoi(rule[2])
@@ -65,8 +65,14 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 				logs.WithE(err).Error("fail to parse line")
 				break
 			}
-			to := strings.ReplaceAll(rule[1], toRemove, "")
-			if to == "" {to = "/"}
+
+			dest, err := url.Parse(rule[1])
+			toRemoveTo := fmt.Sprintf("%s://%s", dest.Scheme, dest.Host)
+			to := strings.ReplaceAll(rule[1], toRemoveTo, "")
+			if to == "" {
+				to = "/"
+			}
+
 			data = domain.Rule{
 				From: from,
 				To:   to,
@@ -83,10 +89,11 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		r.Rules = append(r.Rules, data)
 	}
 
-	// TODO: if len(hosts) > 0, create a VS for each hosts
 	r.Hosts = utils.RemoveDuplicates(hosts)
+	if len(r.Hosts) > 1 {
+		return payload, fmt.Errorf("found %v hosts in the source file, should be 1", len(r.Hosts))
+	}
 
-	var payload bytes.Buffer
 	t, err := template.ParseFiles("templates/virtual-service.yaml")
 	if err != nil {
 		logs.WithE(err).Error("fail to parse template")

@@ -1,22 +1,20 @@
 server:
   URL: "localhost:8080"
   allowedOrigins:
-    - "http://localhost:3000" # Next.js dev server
-    - "http://localhost:8080" # Go Web server once built
+    - "*"
 
 istio:
-  destinationRule: "example.default.svc.cluster.local"
-  virtualServiceNamespace: "default"
-  virtualServiceDefaultDestinationHost: "example.default.svc.cluster.local"
-  virtualServiceDefaultMatchingRegexDestination: "/test($|/.*)"
-  VirtualServiceGateways:
+  namespace: "default" # The Namespace where you want to create the Virtual Services
+  destinationRule: "example.default.svc.cluster.local" # The Destination Rule used for 4xx
+  defaultDestinationHost: "example.default.svc.cluster.local" # The Service used if there was no other match
+  fallbackMatchingRegex: "/test($|/.*)" # The regex used to catch all other requests
+  gateways:
     - istio-system/istio-ingressgateway
-  virtualServiceHosts:
-    - "example.com"
 
 github:
-  token: my_secret_token
-  email: "test@example.com"
-  owner: example
-  repo: "istio-redirector"
-  baseBranchName: "test"
+  token: my_secret_token # The GitHub Token used to authenticate
+  email: "test@example.com" # The email used for the commits
+  owner: example # The GitHub username hosting your GitOps repository
+  repo: "istio-redirector" # The name of your GitOps repository
+  baseRef: "master" # The branch name used for the checkout
+  newBranchPrefix: "new-redirections" # The prefix used the Pull Request name

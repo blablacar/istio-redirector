@@ -9,12 +9,11 @@ type Config struct {
 }
 
 type Istio struct {
-	DestinationRule                               string
-	VirtualServiceNamespace                       string
-	VirtualServiceDefaultDestinationHost          string
-	VirtualServiceDefaultMatchingRegexDestination string
-	VirtualServiceHosts                           []string
-	VirtualServiceGateways                        []string
+	DestinationRule        string
+	Namespace              string
+	DefaultDestinationHost string
+	FallbackMatchingRegex  string
+	Gateways               []string
 }
 
 type Redirections struct {

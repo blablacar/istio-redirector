@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"istio-redirector/domain"
 	"istio-redirector/pkg/redirections"
-	"log"
 	"os"
 
+	"github.com/n0rad/go-erlog/logs"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +28,8 @@ var generateCmd = &cobra.Command{
 
 		payload, err := ioutil.ReadFile(sourceFile)
 		if err != nil {
-			fmt.Printf("can't read file: %v", err)
+			logs.WithE(err).Error("can't read file")
+			return nil
 		}
 
 		content, err := redirections.Generate(
@@ -40,17 +40,20 @@ var generateCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			log.Fatal(err)
+			logs.WithE(err).Error("can't generate file")
+			return nil
 		}
 
 		file, err := os.Create(outputFile)
 		if err != nil {
-			log.Fatal(err)
+			logs.WithE(err).Error("can't create file")
+			return nil
 		}
 		writer := bufio.NewWriter(file)
 		_, err = writer.WriteString(content.String())
 		if err != nil {
-			log.Fatal(err)
+			logs.WithE(err).Error("can't write file")
+			return nil
 		}
 		writer.Flush()
 
