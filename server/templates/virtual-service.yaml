@@ -41,6 +41,4 @@ spec:
       route:
         - destination:
             host: {{ .DefaultDestinationHost }}
-            port:
-              number: 8080
 {{ end }}
