@@ -16,7 +16,6 @@ func init() {
 var webCmd = &cobra.Command{
 	Use:   "web",
 	Short: "Start API HTTP server",
-	Long:  `Display all patients from dieases that have been tried to be cured more than 5 times.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var serverConfig domain.Config

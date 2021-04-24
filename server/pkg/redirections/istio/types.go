@@ -14,6 +14,7 @@ type Istio struct {
 	DefaultDestinationHost string
 	FallbackMatchingRegex  string
 	Gateways               []string
+	ExportTo               []string
 }
 
 type Redirections struct {
@@ -24,5 +25,6 @@ type Redirections struct {
 	DefaultMatchingRegexDestination string
 	Hosts                           []string
 	Gateways                        []string
+	ExportTo                        []string
 	Rules                           []domain.Rule
 }

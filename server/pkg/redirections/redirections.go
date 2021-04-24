@@ -41,6 +41,7 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		DefaultMatchingRegexDestination: istioConfig.Istio.FallbackMatchingRegex,
 		DestinationRuleName:             istioConfig.Istio.DestinationRule,
 		Gateways:                        istioConfig.Istio.Gateways,
+		ExportTo:                        istioConfig.Istio.ExportTo,
 	}
 
 	rulesCSV := csv.ReadFile(inputData.File)

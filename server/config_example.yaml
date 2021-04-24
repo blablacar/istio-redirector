@@ -4,12 +4,14 @@ server:
     - "*"
 
 istio:
-  namespace: "default" # The Namespace where you want to create the Virtual Services
-  destinationRule: "example.default.svc.cluster.local" # The Destination Rule used for 4xx
-  defaultDestinationHost: "example.default.svc.cluster.local" # The Service used if there was no other match
+  namespace: "istio-system" # The Namespace where you want to create the Virtual Services
+  destinationRule: "example.istio-system.svc.cluster.local" # The Destination Rule used for 4xx
+  defaultDestinationHost: "example.istio-system.svc.cluster.local" # The Service used if there was no other match
   fallbackMatchingRegex: "/test($|/.*)" # The regex used to catch all other requests
   gateways:
     - istio-system/istio-ingressgateway
+  exportTo:
+    - "." # "." works if Virtual Services are created in the same namespace than your Gateways, usually istio-system
 
 github:
   token: my_secret_token # The GitHub Token used to authenticate
