@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"istio-redirector/domain"
+	"istio-redirector/pkg/web/virtual_services"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -63,6 +64,8 @@ func register(srvConfig domain.Config) *http.Server {
 	})
 
 	router.HandleFunc("/api/csv/upload", UploadCSVHandler).Methods("POST")
+
+	router.HandleFunc("/api/vs/get", virtual_services.GetVSHandler).Methods("GET")
 
 	router.Use(loggingMiddleware)
 

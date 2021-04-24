@@ -4,10 +4,14 @@ metadata:
   name: {{ .Name }}
   namespace: {{ .Namespace }}
   labels:
-    app: istio-redirector
+    app: istio-redirector-generated
   annotations:
     fluxcd.io/ignore: 'true'
 spec:
+  exportTo:
+    {{- range $export := .ExportTo}}
+    - {{ $export }}
+    {{- end }}
   gateways:
     {{- range $gateway := .Gateways}}
     - {{ $gateway }}
