@@ -25,6 +25,12 @@ spec:
       repo: "my_gitops_repo"
       baseBranchName: "istio-redirector"
 
+    frontendConfig:
+      availableNamespace:
+        - default
+      availableCluster:
+        - prod
+
     istioRedirectorConfig:
       server:
         URL: "0.0.0.0:8080"

@@ -23,7 +23,7 @@ type Redirections struct {
 	DestinationRuleName             string
 	DefaultDestinationHost          string
 	DefaultMatchingRegexDestination string
-	EnableFallback bool
+	EnableFallback                  bool
 	Hosts                           []string
 	Gateways                        []string
 	ExportTo                        []string

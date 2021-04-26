@@ -67,6 +67,8 @@ func register(srvConfig domain.Config) *http.Server {
 
 	router.HandleFunc("/api/vs/get", virtual_services.GetVSHandler).Methods("GET")
 
+	router.HandleFunc("/api/config", GetConfigHandler).Methods("GET")
+
 	router.Use(loggingMiddleware)
 
 	spa := spaHandler{staticPath: "../front/out", indexPath: "index.html"}
