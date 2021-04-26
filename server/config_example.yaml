@@ -4,7 +4,6 @@ server:
     - "*"
 
 istio:
-  namespace: "istio-system" # The Namespace where you want to create the Virtual Services
   destinationRule: "example.istio-system.svc.cluster.local" # The Destination Rule used for 4xx
   defaultDestinationHost: "example.istio-system.svc.cluster.local" # The Service used if there was no other match
   fallbackMatchingRegex: "/test($|/.*)" # The regex used to catch all other requests

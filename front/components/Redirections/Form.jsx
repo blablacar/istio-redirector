@@ -24,6 +24,9 @@ const Form = () => {
       case "redirection_env":
         setFormData({ ...formData, redirection_env: event.target.value });
         break;
+      case "redirection_namespace":
+        setFormData({ ...formData, redirection_namespace: event.target.value });
+        break;
 
       case "file-upload":
         setCSVFile(event.target.files[0]);
@@ -50,8 +53,8 @@ const Form = () => {
     <div>
       <div>
         <div className="px-4 py-5 bg-white sm:p-6">
-          <div className="grid grid-cols-6 gap-6">
-            <div className="col-span-4 sm:col-span-2">
+          <div className="grid grid-cols-8 gap-8">
+            <div className="col-span-8 sm:col-span-2">
               <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
                 Redirection type
               </label>
@@ -69,7 +72,7 @@ const Form = () => {
                 <option value="4xx">4xx</option>
               </select>
             </div>
-            <div className="col-span-4 sm:col-span-2">
+            <div className="col-span-8 sm:col-span-2">
               <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
                 Environment
               </label>
@@ -92,7 +95,30 @@ const Form = () => {
                 })}
               </select>
             </div>
-            <div className="col-span-4 sm:col-span-2">
+            <div className="col-span-8 sm:col-span-2">
+              <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
+                Namespace
+              </label>
+              <select
+                onChange={handleChange}
+                value={formData.redirection_namespace}
+                id="redirection_namespace"
+                name="redirection_namespace"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled defaultValue={""}>
+                  Select your option
+                </option>
+                {publicRuntimeConfig.GITHUB_ENV_NAMESPACE.sort().map((ns) => {
+                  return (
+                    <option key={ns} value={ns}>
+                      {ns}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="col-span-8 sm:col-span-2">
               <label htmlFor="redirection_name" className="block text-sm font-medium text-gray-700">
                 Redirection group name
               </label>

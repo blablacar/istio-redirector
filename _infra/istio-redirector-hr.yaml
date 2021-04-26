@@ -33,13 +33,10 @@ spec:
 
       istio:
         destinationRule: "istio-redirector.default.svc.cluster.local"
-        virtualServiceNamespace: "default"
-        virtualServiceDefaultDestinationHost: "istio-redirector.default.svc.cluster.local"
-        virtualServiceDefaultMatchingRegexDestination: "/blog($|/.*)"
-        VirtualServiceGateways:
+        defaultDestinationHost: "istio-redirector.default.svc.cluster.local"
+        fallbackMatchingRegex: "/blog($|/.*)"
+        gateways:
           - istio-system/istio-ingressgateway
-        virtualServiceHosts:
-          - "istio-redirector.default-1.blbl.cr"
 
   rollback:
     # https://docs.fluxcd.io/projects/helm-operator/en/latest/references/helmrelease-custom-resource.html#rollbacks

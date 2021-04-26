@@ -86,6 +86,24 @@ export default function Redirections() {
                       </div>
                     </div>
                   ) : null}
+                  <div className="sm:ml-3 mt-1 flex items-start">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="enableFallback"
+                        name="enableFallback"
+                        type="checkbox"
+                        onChange={(e) => {
+                          setFormData({ ...formData, enableFallback: e.target.checked });
+                        }}
+                        className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                      />
+                    </div>
+                    <div className="ml-3 text-sm">
+                      <label htmlFor="enableFallback" className="font-medium text-gray-700">
+                        Enable fallback
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : null}
