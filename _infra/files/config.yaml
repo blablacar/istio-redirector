@@ -3,6 +3,12 @@ server:
   allowedOrigins:
     {{- toYaml .Values.istioRedirectorConfig.server.allowedOrigins | nindent 4 }}
 
+frontendConfig:
+  availableNamespace:
+    {{- toYaml .Values.frontendConfig.availableNamespace | nindent 4 }}
+  availableCluster:
+    {{- toYaml .Values.frontendConfig.availableCluster | nindent 4 }}
+
 istio:
   {{- toYaml .Values.istioRedirectorConfig.istio | nindent 2 }}
 
