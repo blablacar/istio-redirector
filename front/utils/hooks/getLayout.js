@@ -7,7 +7,12 @@ export function useGetLayout() {
   const [redirectionType, setRedirectionType] = useState("");
   const [isSuccess, showSuccess] = useState(false);
   const [CSVFile, setCSVFile] = useState();
-  const [formData, setFormData] = useState({ pushGithub: false, redirection_env: "" });
+  const [formData, setFormData] = useState({
+    pushGithub: false,
+    enableFallback: false,
+    redirection_env: "",
+    redirection_namespace: "",
+  });
   const [alert, setAlert] = useState({ isVisible: false });
   const [CSVData, setCSVData] = useState([]);
   const [virtualService, setVS] = useState();
@@ -43,8 +48,10 @@ export function useGetLayout() {
     formDataValues.append("csv_file", CSVFile);
     formDataValues.append("redirection_name", formData.redirection_name);
     formDataValues.append("redirection_env", formData.redirection_env);
+    formDataValues.append("redirection_namespace", formData.redirection_namespace);
     formDataValues.append("redirection_type", redirectionType);
     formDataValues.append("pushGithub", formData.pushGithub);
+    formDataValues.append("enableFallback", formData.enableFallback);
     fetch(`${publicRuntimeConfig.API_URL}api/csv/upload`, { method: "POST", body: formDataValues })
       .then(async (response) => {
         const contentType = response.headers.get("content-type");

@@ -28,11 +28,19 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	enableFallback, err := strconv.ParseBool(r.FormValue("enableFallback"))
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	payload, err := redirections.Generate(
 		domain.InputData{
 			File:            buf.Bytes(),
 			RedirectionName: r.FormValue("redirection_name"),
+			RedirectionNamespace: r.FormValue("redirection_namespace"),
 			RedirectionType: r.FormValue("redirection_type"),
+			EnableFallback: enableFallback,
 		},
 	)
 
@@ -49,7 +57,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if pushGithub {
-		prURL := github.Create(payload.Bytes(), r.FormValue("redirection_name"), r.FormValue("redirection_env"))
+		prURL := github.Create(payload.Bytes(), r.FormValue("redirection_name"), r.FormValue("redirection_env")+"/"+r.FormValue("redirection_namespace"))
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"PR": prURL})
 		return

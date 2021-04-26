@@ -8,10 +8,12 @@ metadata:
   annotations:
     fluxcd.io/ignore: 'true'
 spec:
+{{- if .ExportTo }}
   exportTo:
     {{- range $export := .ExportTo}}
     - {{ $export }}
     {{- end }}
+{{- end }}
   gateways:
     {{- range $gateway := .Gateways}}
     - {{ $gateway }}
@@ -38,6 +40,7 @@ spec:
             host: "{{ $.DestinationRuleName }}"
       {{- end }}
 {{ end }}
+{{- if .EnableFallback }}
 {{- if .DefaultMatchingRegexDestination }}
     - match:
         - uri:
@@ -45,4 +48,5 @@ spec:
       route:
         - destination:
             host: {{ .DefaultDestinationHost }}
+{{ end }}
 {{ end }}

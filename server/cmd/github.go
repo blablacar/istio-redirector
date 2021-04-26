@@ -15,7 +15,7 @@ var githubCmd = &cobra.Command{
 	Short: "Create PR on Github from file",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		github.Create([]byte("test from cmd"), "test-from-cli", "test")
+		github.Create([]byte("test from istio-redirector cmd"), "test-from-cli", "staging-1/infra")
 
 		return nil
 	},

@@ -36,7 +36,8 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 
 	r := istio.Redirections{
 		Name:                            inputData.RedirectionName,
-		Namespace:                       istioConfig.Istio.Namespace,
+		Namespace:                       inputData.RedirectionNamespace,
+		EnableFallback:                  inputData.EnableFallback,
 		DefaultDestinationHost:          istioConfig.Istio.DefaultDestinationHost,
 		DefaultMatchingRegexDestination: istioConfig.Istio.FallbackMatchingRegex,
 		DestinationRuleName:             istioConfig.Istio.DestinationRule,
@@ -68,6 +69,10 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 			}
 
 			dest, err := url.Parse(rule[1])
+			if err != nil {
+				logs.WithE(err).Error("fail to parse line")
+				break
+			}
 			toRemoveTo := fmt.Sprintf("%s://%s", dest.Scheme, dest.Host)
 			to := strings.ReplaceAll(rule[1], toRemoveTo, "")
 			if to == "" {
