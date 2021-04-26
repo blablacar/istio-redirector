@@ -1,11 +1,11 @@
 package domain
 
 type InputData struct {
-	File            []byte
-	RedirectionName string
+	File                 []byte
+	RedirectionName      string
 	RedirectionNamespace string
-	RedirectionType string
-	EnableFallback bool
+	RedirectionType      string
+	EnableFallback       bool
 }
 
 type Rule struct {

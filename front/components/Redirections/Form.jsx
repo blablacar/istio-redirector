@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 import getConfig from "next/config";
 import { useLayoutContext } from "../../context/layout-context";
+import { useEffect, useState } from "react";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -15,6 +16,17 @@ const Form = () => {
     CSVData,
     setAlert,
   } = useLayoutContext();
+
+  const [clusterEnv, setClusterEnv] = useState([]);
+  const [clusterNs, setClusterNs] = useState([]);
+
+  useEffect(() => {
+    fetch(`${publicRuntimeConfig.API_URL}api/config`).then(async (res) => {
+      const payload = await res.json()
+      setClusterEnv(payload.AvailableNamespace);
+      setClusterNs(payload.AvailableCluster);
+    });
+  }, []);
 
   const handleChange = (event) => {
     switch (event.target.name) {
@@ -86,7 +98,7 @@ const Form = () => {
                 <option value="" disabled defaultValue={""}>
                   Select your option
                 </option>
-                {publicRuntimeConfig.GITHUB_ENV_NAMES_AVAILABLE.map((env) => {
+                {clusterEnv.map((env) => {
                   return (
                     <option key={env} value={env}>
                       {env}
@@ -109,7 +121,7 @@ const Form = () => {
                 <option value="" disabled defaultValue={""}>
                   Select your option
                 </option>
-                {publicRuntimeConfig.GITHUB_ENV_NAMESPACE.sort().map((ns) => {
+                {clusterNs.sort().map((ns) => {
                   return (
                     <option key={ns} value={ns}>
                       {ns}

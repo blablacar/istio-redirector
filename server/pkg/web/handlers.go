@@ -12,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/n0rad/go-erlog/logs"
+	"github.com/spf13/viper"
 )
 
 func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,11 +37,11 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	payload, err := redirections.Generate(
 		domain.InputData{
-			File:            buf.Bytes(),
-			RedirectionName: r.FormValue("redirection_name"),
+			File:                 buf.Bytes(),
+			RedirectionName:      r.FormValue("redirection_name"),
 			RedirectionNamespace: r.FormValue("redirection_namespace"),
-			RedirectionType: r.FormValue("redirection_type"),
-			EnableFallback: enableFallback,
+			RedirectionType:      r.FormValue("redirection_type"),
+			EnableFallback:       enableFallback,
 		},
 	)
 
@@ -70,4 +71,14 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 
 	//stream the body to the client without fully loading it into memory
 	io.Copy(w, &payload)
+}
+
+func GetConfigHandler(w http.ResponseWriter, r *http.Request) {
+	var frontendConfig domain.FrontendConfig
+	err := viper.Unmarshal(&frontendConfig)
+	if err != nil {
+		logs.WithE(err).Info("unable to decode into struct")
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(frontendConfig.FrontendConfig)
 }

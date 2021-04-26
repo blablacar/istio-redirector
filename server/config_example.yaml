@@ -12,6 +12,12 @@ istio:
   exportTo:
     - "." # "." works if Virtual Services are created in the same namespace than your Gateways, usually istio-system
 
+frontendConfig:
+  availableNamespace:
+    - default
+  availableCluster:
+    - prod
+
 github:
   token: my_secret_token # The GitHub Token used to authenticate
   email: "test@example.com" # The email used for the commits
