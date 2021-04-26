@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 
 	versionedclient "istio.io/client-go/pkg/clientset/versioned"
@@ -21,9 +22,14 @@ func Setup() (*versionedclient.Clientset, error) {
 		return ic, fmt.Errorf("environment variables kubeconfig need to be set")
 	}
 
+	var restConfig *rest.Config
 	restConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+
 	if err != nil {
-		return ic, fmt.Errorf("failed to create k8s rest client: %s", err)
+		restConfig, err = rest.InClusterConfig()
+		if err != nil {
+			return ic, fmt.Errorf("failed to create k8s rest client: %s", err)
+		}
 	}
 
 	ic, err = versionedclient.NewForConfig(restConfig)
