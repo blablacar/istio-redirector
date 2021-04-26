@@ -92,7 +92,6 @@ spec:
       securityContext:
         fsGroup: 17918
         runAsUser: 17918
-      serviceAccountName: {{ .Release.Name }}
 {{- if .Values.volumes }}
       volumes:
         {{- toYaml .Values.volumes | nindent 8 }}
