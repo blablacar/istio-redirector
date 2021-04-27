@@ -23,7 +23,8 @@ spec:
       email: "istio-redirector-bot"
       owner: my_owner
       repo: "my_gitops_repo"
-      baseBranchName: "istio-redirector"
+      baseRef: "master"
+      newBranchPrefix: "istio-redirector"
 
     frontendConfig:
       availableNamespace:

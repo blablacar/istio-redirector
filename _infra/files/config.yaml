@@ -17,4 +17,5 @@ github:
   email: {{ .Values.github.email }}
   owner: {{ .Values.github.owner }}
   repo: {{ .Values.github.repo }}
-  baseBranchName: {{ .Values.github.baseBranchName }}
+  baseRef: {{ .Values.github.baseRef }}
+  newBranchPrefix: {{ .Values.github.newBranchPrefix }}
