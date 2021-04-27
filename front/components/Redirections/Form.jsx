@@ -23,8 +23,8 @@ const Form = () => {
   useEffect(() => {
     fetch(`${publicRuntimeConfig.API_URL}api/config`).then(async (res) => {
       const payload = await res.json()
-      setClusterEnv(payload.AvailableNamespace);
-      setClusterNs(payload.AvailableCluster);
+      setClusterNs(payload.AvailableNamespace);
+      setClusterEnv(payload.AvailableCluster);
     });
   }, []);
 
