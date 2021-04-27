@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: test
+  namespace: infra
+  labels:
+    app: istio-redirector-generated
+  annotations:
+    fluxcd.io/ignore: 'true'
+spec:
+  gateways:
+    - istio-system/istio-ingressgateway
+  hosts:
+    - www.domain.example
+  http:
+    - match:
+        - uri:
+            exact: /a
+      redirect:
+        uri: /
+        redirectCode: 301
+
+    - match:
+        - uri:
+            exact: /c
+      redirect:
+        uri: /
+        redirectCode: 301
+
