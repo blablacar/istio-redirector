@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func Create(fileContent []byte, prName string, gitPath string) string {
+func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 	var gitHubConfig domain.GithubConfig
 	// Set the file name of the configurations file
 	viper.SetConfigName("config")
@@ -42,11 +42,13 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 	if err != nil {
 		logs.Errorf("Git.GetRef returned error: %v", err)
 	}
-	logs.Infof("%v", baseRef)
+	logs.Debugf("%v", baseRef)
 
 	newBranchName := gitHubConfig.Github.NewBranchPrefix + "/" + prName
+	logs.Debugf("%v", newBranchName)
 	// Create new branch from main
 	newRef := &github.Reference{Ref: github.String("refs/heads/" + newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
+	logs.Debugf("%v", newRef)
 	ref, _, err := client.Git.CreateRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newRef)
 	if err != nil {
 		logs.Errorf("Git.CreateRef returned error: %v", err)
@@ -63,7 +65,7 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, gitPath+"/"+prName+".yaml", opts)
 	if errCreateFile != nil {
 		fmt.Println(errCreateFile)
-		return ""
+		return "", errCreateFile
 	}
 
 	// Create PR from new branch to main
@@ -79,5 +81,5 @@ func Create(fileContent []byte, prName string, gitPath string) string {
 		logs.Errorf("PullRequests.Create returned error: %v", errCreatePr)
 	}
 
-	return prRes.GetHTMLURL()
+	return prRes.GetHTMLURL(), err
 }

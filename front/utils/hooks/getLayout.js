@@ -12,6 +12,8 @@ export function useGetLayout() {
     enableFallback: false,
     redirection_env: "",
     redirection_namespace: "",
+    fallback_value: "",
+    destination_host: "",
   });
   const [alert, setAlert] = useState({ isVisible: false });
   const [CSVData, setCSVData] = useState([]);
@@ -46,12 +48,13 @@ export function useGetLayout() {
     }
     const formDataValues = new FormData();
     formDataValues.append("csv_file", CSVFile);
-    formDataValues.append("redirection_name", formData.redirection_name);
-    formDataValues.append("redirection_env", formData.redirection_env);
-    formDataValues.append("redirection_namespace", formData.redirection_namespace);
-    formDataValues.append("redirection_type", redirectionType);
+    formDataValues.append("redirectionName", formData.redirection_name);
+    formDataValues.append("redirectionEnv", formData.redirection_env);
+    formDataValues.append("redirectionNamespace", formData.redirection_namespace);
+    formDataValues.append("redirectionType", redirectionType);
     formDataValues.append("pushGithub", formData.pushGithub);
-    formDataValues.append("enableFallback", formData.enableFallback);
+    formDataValues.append("fallbackValue", formData.fallback_value);
+    formDataValues.append("destinationHost", formData.destination_host);
     fetch(`${publicRuntimeConfig.API_URL}api/csv/upload`, { method: "POST", body: formDataValues })
       .then(async (response) => {
         const contentType = response.headers.get("content-type");
@@ -86,6 +89,7 @@ export function useGetLayout() {
     clearAlert,
     virtualService,
     setVS,
+    setPRURL,
     prURL,
   };
 }

@@ -13,9 +13,4 @@ istio:
   {{- toYaml .Values.istioRedirectorConfig.istio | nindent 2 }}
 
 github:
-  token: {{ .Values.github.token }}
-  email: {{ .Values.github.email }}
-  owner: {{ .Values.github.owner }}
-  repo: {{ .Values.github.repo }}
-  baseRef: {{ .Values.github.baseRef }}
-  newBranchPrefix: {{ .Values.github.newBranchPrefix }}
+  {{- toYaml .Values.github | nindent 2 }}

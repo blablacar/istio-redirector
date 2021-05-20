@@ -1,11 +1,7 @@
 import Papa from "papaparse";
-import getConfig from "next/config";
 import { useLayoutContext } from "../../context/layout-context";
-import { useEffect, useState } from "react";
 
-const { publicRuntimeConfig } = getConfig();
-
-const Form = () => {
+const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
   const {
     setCSVFile,
     setCSVData,
@@ -17,21 +13,16 @@ const Form = () => {
     setAlert,
   } = useLayoutContext();
 
-  const [clusterEnv, setClusterEnv] = useState([]);
-  const [clusterNs, setClusterNs] = useState([]);
-
-  useEffect(() => {
-    fetch(`${publicRuntimeConfig.API_URL}api/config`).then(async (res) => {
-      const payload = await res.json()
-      setClusterNs(payload.AvailableNamespace);
-      setClusterEnv(payload.AvailableCluster);
-    });
-  }, []);
-
   const handleChange = (event) => {
     switch (event.target.name) {
       case "redirection_name":
         setFormData({ ...formData, redirection_name: event.target.value });
+        break;
+      case "destination_host":
+        setFormData({ ...formData, destination_host: event.target.value });
+        break;
+      case "fallback_value":
+        setFormData({ ...formData, fallback_value: event.target.value.trim() });
         break;
       case "redirection_env":
         setFormData({ ...formData, redirection_env: event.target.value });
@@ -85,7 +76,7 @@ const Form = () => {
               </select>
             </div>
             <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="redirection_env" className="block text-sm font-medium text-gray-700">
                 Environment
               </label>
               <select
@@ -108,7 +99,7 @@ const Form = () => {
               </select>
             </div>
             <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="redirection_namespace" className="block text-sm font-medium text-gray-700">
                 Namespace
               </label>
               <select
@@ -144,6 +135,46 @@ const Form = () => {
               />
             </div>
           </div>
+          <div className="grid grid-cols-8 gap-8 mt-5">
+          <div className="col-span-8 sm:col-span-2">
+              <label htmlFor="fallback_value" className="block text-sm font-medium text-gray-700">
+                Fallback - <small>/bus($|/.*)</small>
+              </label>
+              <input
+                onChange={handleChange}
+                type="text"
+                name="fallback_value"
+                id="fallback_value"
+                placeholder="Leave empty if not needed"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            {redirectionType === '4xx' || formData.fallback_value.length > 0 ? (
+              <div className="col-span-8 sm:col-span-2">
+                <label htmlFor="destination_host" className="block text-sm font-medium text-gray-700">
+                  Destination host
+                </label>
+                <select
+                  onChange={handleChange}
+                  value={formData.destination_host}
+                  id="destination_host"
+                  name="destination_host"
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                <option value="" disabled defaultValue={""}>
+                    Select your option
+                </option>
+                {clusterSVC.map((svc) => {
+                  return (
+                    <option key={svc} value={svc}>
+                      {svc}
+                    </option>
+                  );
+                })}
+                </select>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
       {redirectionType.length > 0 && CSVData.length === 0 ? (
@@ -168,6 +199,14 @@ const Form = () => {
                     <span>/my-page,410</span>
                   </>
                 )}
+              </p>
+              <p className="mt-5">
+                This will generate a single VirtualService, in the cluster <strong>{formData.redirection_env}</strong>, 
+                in the namespace <strong>{formData.redirection_namespace}</strong>.<br/> 
+                It will have the name <strong>{formData.redirection_name}</strong>.<br/>
+                {formData.fallback_value.length > 0 ? (
+                <>All requests not handled in the following redirections, matching <strong>{formData.fallback_value} </strong>
+                will be forwarded to the Kubernetes Service <strong>{formData.destination_host}.svc.cluster.local</strong></> ) : null}
               </p>
             </div>
           </div>

@@ -29,19 +29,15 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	enableFallback, err := strconv.ParseBool(r.FormValue("enableFallback"))
-	if err != nil {
-		w.WriteHeader(500)
-		w.Write([]byte(err.Error()))
-		return
-	}
 	payload, err := redirections.Generate(
 		domain.InputData{
 			File:                 buf.Bytes(),
-			RedirectionName:      r.FormValue("redirection_name"),
-			RedirectionNamespace: r.FormValue("redirection_namespace"),
-			RedirectionType:      r.FormValue("redirection_type"),
-			EnableFallback:       enableFallback,
+			RedirectionName:      r.FormValue("redirectionName"),
+			RedirectionEnv:       r.FormValue("redirectionEnv"),
+			RedirectionNamespace: r.FormValue("redirectionNamespace"),
+			RedirectionType:      r.FormValue("redirectionType"),
+			FallbackValueRegex:   r.FormValue("fallbackValue"),
+			DestinationHost:      r.FormValue("destinationHost"),
 		},
 	)
 
@@ -58,8 +54,12 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if pushGithub {
-		prURL := github.Create(payload.Bytes(), r.FormValue("redirection_name"), r.FormValue("redirection_env")+"/"+r.FormValue("redirection_namespace"))
+		prURL, err := github.Create(payload.Bytes(), r.FormValue("redirectionName"), r.FormValue("redirectionEnv")+"/"+r.FormValue("redirectionNamespace"))
 		w.Header().Set("Content-Type", "application/json")
+		if err != nil {
+			w.WriteHeader(400)
+			json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
+		}
 		json.NewEncoder(w).Encode(map[string]string{"PR": prURL})
 		return
 	}

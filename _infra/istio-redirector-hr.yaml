@@ -31,6 +31,8 @@ spec:
         - default
       availableCluster:
         - prod
+      availableDestinationSvc:
+        - my_svc.svc
 
     istioRedirectorConfig:
       server:
@@ -39,9 +41,6 @@ spec:
           - "http://0.0.0.0:8080" # Go Web server once built
 
       istio:
-        destinationRule: "istio-redirector.default.svc.cluster.local"
-        defaultDestinationHost: "istio-redirector.default.svc.cluster.local"
-        fallbackMatchingRegex: "/blog($|/.*)"
         gateways:
           - istio-system/istio-ingressgateway
 

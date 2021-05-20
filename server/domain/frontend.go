@@ -5,6 +5,8 @@ type FrontendConfig struct {
 }
 
 type FrontendData struct {
-	AvailableNamespace []string
-	AvailableCluster   []string
+	AvailableNamespace      []string
+	AvailableCluster        []string
+	AvailableDestinationSvc []string
+	EnableGitHub            bool
 }

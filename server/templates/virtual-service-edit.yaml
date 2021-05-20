@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .Namespace }}
+  labels:
+    {{- range $key, $value := .Labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+  annotations:
+    fluxcd.io/ignore: 'true'
+spec:
+  gateways:
+    {{- range $gateway := .Spec.Gateways}}
+    - {{ $gateway }}
+    {{- end }}
+  hosts:
+    {{- range $host := .Spec.Hosts}}
+    - {{ $host }}
+    {{- end }}
+  http:
+{{- range $http := .Spec.Http}}
+    - match:
+    {{- range $match := $http.Match}}
+        - uri:
+            {{- if $match.Uri.GetExact }}
+            exact: {{ $match.Uri.GetExact }}
+            {{- else }}
+            regex: {{ $match.Uri.GetRegex }}
+            {{- end}}
+      {{- if $http.Redirect }}
+      redirect:
+        uri: {{ $http.Redirect.Uri }}
+        redirectCode: {{ $http.Redirect.RedirectCode }}
+      {{- else }}
+      {{- if $http.Fault }}
+      fault:
+        abort:
+          httpStatus: {{ $http.Fault.Abort.GetHttpStatus }}
+      {{- end }}
+      route:
+        {{- range $route := $http.Route}}
+        - destination:
+            host: "{{ $route.Destination.Host }}"
+        {{- end }}
+      {{- end }}
+    {{ end }}
+{{- end }}
