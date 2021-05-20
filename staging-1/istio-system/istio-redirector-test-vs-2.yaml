@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: istio-redirector-test-vs-2
+  namespace: istio-system
+  labels:
+    
+    app: istio-redirector-generated
+    
+    cluster_name: staging-1
+    
+  annotations:
+    fluxcd.io/ignore: 'true'
+spec:
+  gateways:
+    - istio-system/istio-ingressgateway
+  hosts:
+    - istio-redirector.staging-1.blbl.cr
+  http:
+    - match:
+        - uri:
+            exact: /c
+      redirect:
+        uri: /
+        redirectCode: 301
+    
