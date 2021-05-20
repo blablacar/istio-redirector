@@ -3,10 +3,26 @@ import getConfig from "next/config";
 import { useLayoutContext } from "../../context/layout-context";
 import Table from "./Table";
 import Modal from "./Modal";
+import { useEffect, useState } from "react";
 const { publicRuntimeConfig } = getConfig();
 
 export default function Redirections() {
   const { CSVData, clearData, sendData, isSuccess, setFormData, formData } = useLayoutContext();
+
+  const [clusterEnv, setClusterEnv] = useState([]);
+  const [clusterNs, setClusterNs] = useState([]);
+  const [clusterSVC, setClusterSVC] = useState([]);
+  const [hasGitHub, setHasGitHub] = useState(false);
+
+  useEffect(() => {
+    fetch(`${publicRuntimeConfig.API_URL}api/config`).then(async (res) => {
+      const payload = await res.json()
+      setClusterNs(payload.AvailableNamespace);
+      setClusterEnv(payload.AvailableCluster);
+      setClusterSVC(payload.AvailableDestinationSvc);
+      setHasGitHub(payload.EnableGitHub);
+    });
+  }, []);
 
   return (
     <main>
@@ -15,7 +31,7 @@ export default function Redirections() {
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-              Istio Redirector
+              Istio Redirector {CSVData.length>0 ? `- ${CSVData.length} ${CSVData.length > 1 ? 'founds' : 'found'}` : ''}
             </h2>
             {CSVData.length > 0 ? (
               <div className="mt-5 flex lg:mt-0 lg:ml-4">
@@ -86,29 +102,11 @@ export default function Redirections() {
                       </div>
                     </div>
                   ) : null}
-                  <div className="sm:ml-3 mt-1 flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="enableFallback"
-                        name="enableFallback"
-                        type="checkbox"
-                        onChange={(e) => {
-                          setFormData({ ...formData, enableFallback: e.target.checked });
-                        }}
-                        className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="enableFallback" className="font-medium text-gray-700">
-                        Enable fallback
-                      </label>
-                    </div>
-                  </div>
                 </div>
               </div>
             ) : null}
           </div>
-          <Form />
+          <Form clusterEnv={clusterEnv} clusterNs={clusterNs} clusterSVC={clusterSVC} />
           {CSVData.length > 0 ? <Table /> : null}
         </div>
       </div>

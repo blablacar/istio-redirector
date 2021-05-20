@@ -9,23 +9,19 @@ type Config struct {
 }
 
 type Istio struct {
-	DestinationRule        string
-	Namespace              string
-	DefaultDestinationHost string
-	FallbackMatchingRegex  string
-	Gateways               []string
-	ExportTo               []string
+	DestinationRule string
+	Namespace       string
+	Gateways        []string
 }
 
 type Redirections struct {
-	Name                            string
-	Namespace                       string
-	DestinationRuleName             string
-	DefaultDestinationHost          string
-	DefaultMatchingRegexDestination string
-	EnableFallback                  bool
-	Hosts                           []string
-	Gateways                        []string
-	ExportTo                        []string
-	Rules                           []domain.Rule
+	Name               string
+	Namespace          string
+	ClusterName        string
+	DestinationHost    string
+	FallbackValueRegex string
+	EnableFallback     bool
+	Hosts              []string
+	Gateways           []string
+	Rules              []domain.Rule
 }

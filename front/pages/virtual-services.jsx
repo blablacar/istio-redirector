@@ -1,20 +1,7 @@
-import { useEffect, useState } from "react";
-import getConfig from "next/config";
 import Layout from "../components/Layout";
 import VirtualServices from "../components/VirtualServices/VirtualServices";
 
-const { publicRuntimeConfig } = getConfig();
-
 export default function VirtualServicesPage() {
-  const [vs, setVS] = useState([]);
-
-  useEffect(() => {
-    fetch(`${publicRuntimeConfig.API_URL}api/vs/get`)
-      .then(async (response) => setVS(await response.json()))
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   return (
     <Layout>
@@ -24,7 +11,7 @@ export default function VirtualServicesPage() {
             Existing redirections
           </h2>
           <div className="flex flex-col mt-8">
-            <VirtualServices vs={vs} />
+            <VirtualServices />
           </div>
         </div>
       </div>

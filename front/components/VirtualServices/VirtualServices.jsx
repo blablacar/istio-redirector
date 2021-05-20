@@ -1,12 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import getConfig from "next/config";
 import Modal from "./Modal";
 
-export default function VirtualServices({ vs }) {
+const { publicRuntimeConfig } = getConfig();
+
+export default function VirtualServices() {
   const [currentVS, setCurrentVS] = useState();
+  const [vs, setVS] = useState([]);
+  const [load, setLoad] = useState(false);
+
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  useEffect(() => {
+    if(load) {
+      fetchData()
+      setLoad(false)
+    }
+  }, [load])
+
+  const fetchData = () => {
+    fetch(`${publicRuntimeConfig.API_URL}api/vs/get`)
+      .then(async (response) => setVS(await response.json()))
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 
   return (
     <>
-      {currentVS ? <Modal payload={currentVS} clean={() => setCurrentVS()} /> : null}
+      {currentVS ? <Modal payload={currentVS} clean={() => setCurrentVS()} setLoad={(e) => setLoad(e)} /> : null}
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -17,7 +42,19 @@ export default function VirtualServices({ vs }) {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
+                    Cluster
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Namespace
                   </th>
                   <th
                     scope="col"
@@ -50,7 +87,13 @@ export default function VirtualServices({ vs }) {
                   return (
                     <tr key={index}>
                       <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{v.metadata.labels.cluster_name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{v.metadata.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{v.metadata.namespace}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{v.spec.hosts[0]}</div>

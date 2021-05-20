@@ -35,14 +35,12 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 	}
 
 	r := istio.Redirections{
-		Name:                            inputData.RedirectionName,
-		Namespace:                       inputData.RedirectionNamespace,
-		EnableFallback:                  inputData.EnableFallback,
-		DefaultDestinationHost:          istioConfig.Istio.DefaultDestinationHost,
-		DefaultMatchingRegexDestination: istioConfig.Istio.FallbackMatchingRegex,
-		DestinationRuleName:             istioConfig.Istio.DestinationRule,
-		Gateways:                        istioConfig.Istio.Gateways,
-		ExportTo:                        istioConfig.Istio.ExportTo,
+		Name:               inputData.RedirectionName,
+		ClusterName:        inputData.RedirectionEnv,
+		Namespace:          inputData.RedirectionNamespace,
+		FallbackValueRegex: inputData.FallbackValueRegex,
+		DestinationHost:    inputData.DestinationHost + ".svc.cluster.local",
+		Gateways:           istioConfig.Istio.Gateways,
 	}
 
 	rulesCSV := csv.ReadFile(inputData.File)
