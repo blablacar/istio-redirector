@@ -72,13 +72,6 @@ volumeMounts:
     readOnly: true
 
 apiConfig:
-  github:
-    token: my_token
-    email: "bot_email"
-    owner: my_repo_owner
-    repo: "istio-redirector"
-    baseBranchName: "istio-redirector"
-
   server:
     URL: "0.0.0.0:8080"
     allowedOrigins:
@@ -87,7 +80,6 @@ apiConfig:
   istio:
     gateways:
     - istio-system/istio-ingressgateway
-    
 
   frontendConfig:
     enableGitHub: true
@@ -97,3 +89,10 @@ apiConfig:
     - staging
     availableDestinationSvc:
     - istio-redirector.default
+
+  github:
+    token: my_token
+    email: "bot_email"
+    owner: my_repo_owner
+    repo: "istio-redirector"
+    baseBranchName: "istio-redirector"

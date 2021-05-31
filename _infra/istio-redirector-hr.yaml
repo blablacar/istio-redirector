@@ -18,23 +18,7 @@ spec:
       repository: etifontaine/istio-redirector
       tag: v0.0.3
 
-    github:
-      token: my_token # Should be included from a secret
-      email: "istio-redirector-bot"
-      owner: my_owner
-      repo: "my_gitops_repo"
-      baseRef: "master"
-      newBranchPrefix: "istio-redirector"
-
-    frontendConfig:
-      availableNamespace:
-        - default
-      availableCluster:
-        - prod
-      availableDestinationSvc:
-        - my_svc.svc
-
-    istioRedirectorConfig:
+    apiConfig:
       server:
         URL: "0.0.0.0:8080"
         allowedOrigins:
@@ -43,6 +27,23 @@ spec:
       istio:
         gateways:
           - istio-system/istio-ingressgateway
+
+      frontendConfig:
+        enableGitHub: true
+        availableNamespace:
+          - default
+        availableCluster:
+          - prod
+        availableDestinationSvc:
+          - my_svc.svc
+
+      github:
+        token: my_token # Should be included from a secret
+        email: "istio-redirector-bot"
+        owner: my_owner
+        repo: "my_gitops_repo"
+        baseRef: "master"
+        newBranchPrefix: "istio-redirector"
 
   rollback:
     # https://docs.fluxcd.io/projects/helm-operator/en/latest/references/helmrelease-custom-resource.html#rollbacks
