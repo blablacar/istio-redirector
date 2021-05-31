@@ -46,6 +46,8 @@ export function useGetLayout() {
       setAlert({ isVisible: true, content: "Redirection name must be filled" });
       return;
     }
+    setPRURL("")
+    setVS()
     const formDataValues = new FormData();
     formDataValues.append("csv_file", CSVFile);
     formDataValues.append("redirectionName", formData.redirection_name);
