@@ -81,18 +81,18 @@ github:
 server:
   URL: "0.0.0.0:8080"
   allowedOrigins:
-    - "http://localhost:8080" # Go Web server once built
+  - "http://localhost:8080" # Go Web server once built
 
 istio:
   gateways:
-    - istio-system/istio-ingressgateway
+  - istio-system/istio-ingressgateway
   
 
 frontendConfig:
   enableGitHub: true
   availableNamespace:
-    - istio-system
+  - istio-system
   availableCluster:
-    - staging
+  - staging
   availableDestinationSvc:
-    - istio-redirector.default
+  - istio-redirector.default
