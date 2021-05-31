@@ -78,18 +78,21 @@ github:
   repo: "istio-redirector"
   baseBranchName: "istio-redirector"
 
-istioRedirectorConfig:
-  server:
-    URL: "0.0.0.0:8080"
-    allowedOrigins:
-      - "http://localhost:8080" # Go Web server once built
+server:
+  URL: "0.0.0.0:8080"
+  allowedOrigins:
+    - "http://localhost:8080" # Go Web server once built
 
-  istio:
-    destinationRule: "example.default.svc.cluster.local"
-    virtualServiceNamespace: "default"
-    virtualServiceDefaultDestinationHost: "example.default.svc.cluster.local"
-    virtualServiceDefaultMatchingRegexDestination: "/test($|/.*)"
-    VirtualServiceGateways:
-      - istio-system/istio-ingressgateway
-    virtualServiceHosts:
-      - "example.com"
+istio:
+  gateways:
+    - istio-system/istio-ingressgateway
+  
+
+frontendConfig:
+  enableGitHub: true
+  availableNamespace:
+    - istio-system
+  availableCluster:
+    - staging
+  availableDestinationSvc:
+    - istio-redirector.default

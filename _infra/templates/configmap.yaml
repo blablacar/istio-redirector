@@ -5,5 +5,3 @@ metadata:
 data:
   config.yaml: |+
     {{- tpl (.Files.Get "files/config.yaml") . | nindent 4 }}
-
-

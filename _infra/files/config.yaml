@@ -1,19 +1,11 @@
-frontendConfig:
-  availableNamespace:
-    {{- toYaml .Values.frontendConfig.availableNamespace | nindent 4 }}
-  availableCluster:
-    {{- toYaml .Values.frontendConfig.availableCluster | nindent 4 }}
-  availableDestinationSvc:
-    {{- toYaml .Values.frontendConfig.availableDestinationSvc | nindent 4 }}
+server:
+{{- toYaml .Values.server | nindent 4 }}
 
-istioRedirectorConfig:
-  server:
-    URL: {{ .Values.istioRedirectorConfig.server.URL }}
-    allowedOrigins:
-      {{- toYaml .Values.istioRedirectorConfig.server.allowedOrigins | nindent 4 }}
-  istio:
-    gateways:
-      {{- toYaml .Values.istioRedirectorConfig.istio.gateways | nindent 4 }}
+istio:
+{{- toYaml .Values.istio | nindent 4 }}
+
+frontendConfig:
+{{- toYaml .Values.frontendConfig | nindent 4 }}
 
 github:
-  {{- toYaml .Values.github | nindent 2 }}
+{{- toYaml .Values.github | nindent 4 }}
