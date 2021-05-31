@@ -1,11 +1,1 @@
-server:
-{{- toYaml .Values.server | nindent 2 }}
-
-istio:
-{{- toYaml .Values.istio | nindent 2 }}
-
-frontendConfig:
-{{- toYaml .Values.frontendConfig | nindent 2 }}
-
-github:
-{{- toYaml .Values.github | nindent 2 }}
+{{- toYaml .Values.apiConfig }}

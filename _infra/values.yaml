@@ -71,28 +71,29 @@ volumeMounts:
     subPath: config.yaml
     readOnly: true
 
-github:
-  token: my_token
-  email: "bot_email"
-  owner: my_repo_owner
-  repo: "istio-redirector"
-  baseBranchName: "istio-redirector"
+apiConfig:
+  github:
+    token: my_token
+    email: "bot_email"
+    owner: my_repo_owner
+    repo: "istio-redirector"
+    baseBranchName: "istio-redirector"
 
-server:
-  URL: "0.0.0.0:8080"
-  allowedOrigins:
-  - "http://localhost:8080" # Go Web server once built
+  server:
+    URL: "0.0.0.0:8080"
+    allowedOrigins:
+    - "http://localhost:8080" # Go Web server once built
 
-istio:
-  gateways:
-  - istio-system/istio-ingressgateway
-  
+  istio:
+    gateways:
+    - istio-system/istio-ingressgateway
+    
 
-frontendConfig:
-  enableGitHub: true
-  availableNamespace:
-  - istio-system
-  availableCluster:
-  - staging
-  availableDestinationSvc:
-  - istio-redirector.default
+  frontendConfig:
+    enableGitHub: true
+    availableNamespace:
+    - istio-system
+    availableCluster:
+    - staging
+    availableDestinationSvc:
+    - istio-redirector.default
