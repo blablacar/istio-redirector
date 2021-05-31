@@ -82,7 +82,7 @@ export default function Redirections() {
                       Send
                     </button>
                   </span>
-                  {publicRuntimeConfig.GITHUB_ENABLED ? (
+                  {hasGitHub ? (
                     <div className="sm:ml-3 mt-1 flex items-start">
                       <div className="flex items-center h-5">
                         <input
