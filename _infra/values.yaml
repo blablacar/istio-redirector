@@ -70,6 +70,12 @@ volumeMounts:
     subPath: config.yaml
     readOnly: true
 
+deployment:
+  labels: {}
+
+pod:
+  labels: {}
+
 service:
   annotations: {}
 

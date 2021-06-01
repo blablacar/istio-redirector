@@ -8,6 +8,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app: {{ .Release.Name }}
+{{- with .Values.deployment.labels }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   revisionHistoryLimit: 3
   selector:
@@ -26,6 +29,9 @@ spec:
         app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app: {{ .Release.Name }}
+{{- with .Values.pod.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
       annotations:
         json_logs: "true"
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
