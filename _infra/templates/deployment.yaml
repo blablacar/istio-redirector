@@ -29,6 +29,9 @@ spec:
       annotations:
         json_logs: "true"
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+{{- with .Values.pod.annotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
     spec:
       affinity:
         nodeAffinity:

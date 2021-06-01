@@ -59,7 +59,7 @@ export default function ModalEditVS({ payload, clean, setLoad }) {
                                 {r.redirect?.redirectCode}
                               </span>
                             </div>
-                            <div className="ml-4 flex-shrink-0">
+                            {/* <div className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
                                 value={index}
@@ -72,7 +72,7 @@ export default function ModalEditVS({ payload, clean, setLoad }) {
                               >
                                 Remove
                               </button>
-                            </div>
+                            </div> */}
                           </li>
                         );
                       })}
@@ -84,7 +84,7 @@ export default function ModalEditVS({ payload, clean, setLoad }) {
           </div>
 
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            {
+            {/* {
               prURL.length > 0 ?
                 (
                   <a
@@ -105,8 +105,7 @@ export default function ModalEditVS({ payload, clean, setLoad }) {
                   >
                     Push to GitHub
                   </button>
-                )}
-
+                )} */}
             <button
               type="button"
               onClick={() => {
