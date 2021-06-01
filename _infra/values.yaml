@@ -73,14 +73,12 @@ volumeMounts:
 deployment:
   labels: {}
 
-pod:
-  labels: {}
-
 service:
   annotations: {}
 
 pod:
   annotations: {}
+  labels: {}
 
 apiConfig:
   server:
