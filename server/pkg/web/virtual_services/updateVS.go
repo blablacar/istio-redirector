@@ -22,20 +22,24 @@ func UpdateVSHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&vs)
 	if err != nil {
+		logs.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	t, err := template.ParseFiles("templates/virtual-service-edit.yaml")
 	if err != nil {
+		logs.Error(err.Error())
 		logs.WithE(err).Error("fail to parse template")
 	}
 	err = t.Execute(&payload, vs)
 	if err != nil {
+		logs.Error(err.Error())
 		logs.WithE(err).Error("fail to execute content to template")
 	}
 
 	_, err = istio.Validate(&payload)
 	if err != nil {
+		logs.Error(err.Error())
 		logs.WithE(err).Error("fail to validate template as VirtualService")
 	}
 
@@ -43,6 +47,7 @@ func UpdateVSHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
+		logs.Error(err.Error())
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
 		return

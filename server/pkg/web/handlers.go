@@ -19,6 +19,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	file, _, err := r.FormFile("csv_file")
 	if err != nil {
+		logs.Warn(err.Error())
 		logs.WithE(err).Error("can't get csv file from form")
 		return
 	}
@@ -42,6 +43,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
+		logs.Error(err.Error())
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
 		return
@@ -49,6 +51,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 
 	pushGithub, err := strconv.ParseBool(r.FormValue("pushGithub"))
 	if err != nil {
+		logs.Error(err.Error())
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
 		return
@@ -57,6 +60,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		prURL, err := github.Create(payload.Bytes(), r.FormValue("redirectionName"), r.FormValue("redirectionEnv")+"/"+r.FormValue("redirectionNamespace"))
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil {
+			logs.Error(err.Error())
 			w.WriteHeader(400)
 			json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
 		}
