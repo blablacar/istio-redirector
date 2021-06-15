@@ -6,7 +6,7 @@ This project is still under developpement to improve the user experience. Howeve
 
 [Documentation](https://etifontaine.github.io/istio-redirector/)
 
-![Demo](https://github.com/etifontaine/istio-redirector/blob/main/.github/images/istio-redirector.gif?raw=true)
+![Demo](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/istio-redirector.gif?raw=true)
 
 ## What is this ?
 
@@ -18,12 +18,12 @@ Once generated, the file can either be added to your GitOps repository or downlo
 
 ### The UI for SEO Managers
 
-![Homepage](https://github.com/etifontaine/istio-redirector/blob/main/.github/images/homepage.png?raw=true)
+![Homepage](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/homepage.png?raw=true)
 
 
 ### The output for developpers/Ops
 
-<img src="https://github.com/etifontaine/istio-redirector/blob/main/.github/images/virtualservice.png?raw=true" alt="Virtual Service" height="500"/>
+<img src="https://github.com/etifontaine/istio-redirector/blob/master/.github/images/virtualservice.png?raw=true" alt="Virtual Service" height="500"/>
 
 ## Techno
 
@@ -55,10 +55,10 @@ For more information, please refer to the Contributing section.
 
 ## 💬 Contributing
 
-* [Code of Conduct](https://github.com/etifontaine/istio-redirector/blob/main/CODE_OF_CONDUCT.md)
-* [Contributing Guideline](https://github.com/etifontaine/istio-redirector/blob/main/CONTRIBUTING.md)
-* [Commit Convention](https://github.com/etifontaine/istio-redirector/blob/main/./github/docs/COMMIT_MESSAGE_CONVENTION.md)
-* [Issue Guidelines](https://github.com/etifontaine/istio-redirector/tree/main/.github/ISSUE_TEMPLATE)
+* [Code of Conduct](https://github.com/etifontaine/istio-redirector/blob/master/CODE_OF_CONDUCT.md)
+* [Contributing Guideline](https://github.com/etifontaine/istio-redirector/blob/master/CONTRIBUTING.md)
+* [Commit Convention](https://github.com/etifontaine/istio-redirector/blob/master/./github/docs/COMMIT_MESSAGE_CONVENTION.md)
+* [Issue Guidelines](https://github.com/etifontaine/istio-redirector/tree/master/.github/ISSUE_TEMPLATE)
 
 
 
