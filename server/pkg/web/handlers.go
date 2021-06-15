@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -19,8 +19,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	file, _, err := r.FormFile("csv_file")
 	if err != nil {
-		logs.Warn(err.Error())
-		logs.WithE(err).Error("can't get csv file from form")
+		log.WithError(err).Error("can't get csv file from form")
 		return
 	}
 	defer file.Close()
@@ -43,7 +42,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		logs.Error(err.Error())
+		log.Error(err.Error())
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
 		return
@@ -51,7 +50,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 
 	pushGithub, err := strconv.ParseBool(r.FormValue("pushGithub"))
 	if err != nil {
-		logs.Error(err.Error())
+		log.Error(err.Error())
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
 		return
@@ -60,7 +59,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		prURL, err := github.Create(payload.Bytes(), r.FormValue("redirectionName"), r.FormValue("redirectionEnv")+"/"+r.FormValue("redirectionNamespace"))
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil {
-			logs.Error(err.Error())
+			log.Error(err.Error())
 			w.WriteHeader(400)
 			json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
 		}
@@ -81,7 +80,7 @@ func GetConfigHandler(w http.ResponseWriter, r *http.Request) {
 	var frontendConfig domain.FrontendConfig
 	err := viper.Unmarshal(&frontendConfig)
 	if err != nil {
-		logs.WithE(err).Info("unable to decode into struct")
+		log.WithError(err).Info("unable to decode into struct")
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(frontendConfig.FrontendConfig)

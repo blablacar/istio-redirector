@@ -6,7 +6,7 @@ import (
 	"istio-redirector/domain"
 
 	"github.com/google/go-github/v35/github"
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 )
@@ -20,12 +20,12 @@ func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
-		logs.WithE(err).Info("can't read config.yaml")
+		log.WithError(err).Info("can't read config.yaml")
 	}
 
 	err := viper.Unmarshal(&gitHubConfig)
 	if err != nil {
-		logs.WithE(err).Info("unable to decode into struct")
+		log.WithError(err).Info("unable to decode into struct")
 	}
 
 	ctx := context.Background()
@@ -40,20 +40,20 @@ func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 	// Get main branch as reference
 	baseRef, _, err := client.Git.GetRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "refs/heads/"+gitHubConfig.Github.BaseRef)
 	if err != nil {
-		logs.Errorf("Git.GetRef returned error: %v", err)
+		log.Errorf("Git.GetRef returned error: %v", err)
 	}
-	logs.Debugf("%v", baseRef)
+	log.Debugf("%v", baseRef)
 
 	newBranchName := gitHubConfig.Github.NewBranchPrefix + "/" + prName
-	logs.Debugf("%v", newBranchName)
+	log.Debugf("%v", newBranchName)
 	// Create new branch from main
 	newRef := &github.Reference{Ref: github.String("refs/heads/" + newBranchName), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
-	logs.Debugf("%v", newRef)
+	log.Debugf("%v", newRef)
 	ref, _, err := client.Git.CreateRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newRef)
 	if err != nil {
-		logs.Errorf("Git.CreateRef returned error: %v", err)
+		log.Errorf("Git.CreateRef returned error: %v", err)
 	}
-	logs.Infof("%v", ref.GetURL())
+	log.Infof("%v", ref.GetURL())
 
 	// Add new content to new branch
 	opts := &github.RepositoryContentFileOptions{
@@ -78,7 +78,7 @@ func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 	}
 	prRes, _, errCreatePr := client.PullRequests.Create(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, newPR)
 	if errCreatePr != nil {
-		logs.Errorf("PullRequests.Create returned error: %v", errCreatePr)
+		log.Errorf("PullRequests.Create returned error: %v", errCreatePr)
 	}
 
 	return prRes.GetHTMLURL(), err

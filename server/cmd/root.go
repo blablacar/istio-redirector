@@ -3,8 +3,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/n0rad/go-erlog/logs"
-	_ "github.com/n0rad/go-erlog/register"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +18,7 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func ExecuteCmd() {
 	if err := rootCmd.Execute(); err != nil {
-		logs.WithError(err).Error("An error occurred")
+		log.WithError(err).Error("an error occurred")
 		os.Exit(1)
 	}
 }

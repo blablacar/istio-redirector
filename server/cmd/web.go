@@ -4,7 +4,7 @@ import (
 	"istio-redirector/domain"
 	"istio-redirector/pkg/web"
 
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -26,12 +26,12 @@ var webCmd = &cobra.Command{
 		viper.SetConfigType("yaml")
 
 		if err := viper.ReadInConfig(); err != nil {
-			logs.WithE(err).Info("can't read config.yaml")
+			log.WithError(err).Error("can't read config.yaml")
 		}
 
 		err := viper.Unmarshal(&serverConfig)
 		if err != nil {
-			logs.WithE(err).Info("unable to decode into struct")
+			log.WithError(err).Error("unable to decode into struct")
 		}
 
 		web.Serve(serverConfig)

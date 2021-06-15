@@ -7,7 +7,7 @@ import (
 	"istio-redirector/pkg/redirections"
 	"os"
 
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +28,7 @@ var generateCmd = &cobra.Command{
 
 		payload, err := ioutil.ReadFile(sourceFile)
 		if err != nil {
-			logs.WithE(err).Error("can't read file")
+			log.WithError(err).Error("can't read file")
 			return nil
 		}
 
@@ -40,19 +40,19 @@ var generateCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			logs.WithE(err).Error("can't generate file")
+			log.WithError(err).Error("can't generate file")
 			return nil
 		}
 
 		file, err := os.Create(outputFile)
 		if err != nil {
-			logs.WithE(err).Error("can't create file")
+			log.WithError(err).Error("can't create file")
 			return nil
 		}
 		writer := bufio.NewWriter(file)
 		_, err = writer.WriteString(content.String())
 		if err != nil {
-			logs.WithE(err).Error("can't write file")
+			log.WithError(err).Error("can't write file")
 			return nil
 		}
 		writer.Flush()
