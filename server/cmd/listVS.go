@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"istio-redirector/pkg/k8s"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -19,19 +20,19 @@ var istioListVSCmd = &cobra.Command{
 
 		ic, err := k8s.Setup()
 		if err != nil {
-			fmt.Println(err)
+			log.WithError(err).Error("can't setup k8s")
 			return nil
 		}
 
 		vsList, err := k8s.GetVS(*ic)
 		if err != nil {
-			fmt.Println(err)
+			log.WithError(err).Error("can't get VirtualService")
 			return nil
 		}
 
 		vs, err := json.Marshal(vsList)
 		if err != nil {
-			fmt.Println(err)
+			log.WithError(err).Error("can't json.Marshal file")
 			return nil
 		}
 		fmt.Println(string(vs))

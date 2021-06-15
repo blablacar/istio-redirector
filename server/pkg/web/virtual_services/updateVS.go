@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/schema"
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"istio.io/client-go/pkg/apis/networking/v1beta1"
 )
 
@@ -22,32 +22,29 @@ func UpdateVSHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&vs)
 	if err != nil {
-		logs.Error(err.Error())
+		log.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	t, err := template.ParseFiles("templates/virtual-service-edit.yaml")
 	if err != nil {
-		logs.Error(err.Error())
-		logs.WithE(err).Error("fail to parse template")
+		log.WithError(err).Error("fail to parse template")
 	}
 	err = t.Execute(&payload, vs)
 	if err != nil {
-		logs.Error(err.Error())
-		logs.WithE(err).Error("fail to execute content to template")
+		log.WithError(err).Error("fail to execute content to template")
 	}
 
 	_, err = istio.Validate(&payload)
 	if err != nil {
-		logs.Error(err.Error())
-		logs.WithE(err).Error("fail to validate template as VirtualService")
+		log.WithError(err).Error("fail to validate template as VirtualService")
 	}
 
 	prURL, err := github.Create(payload.Bytes(), vs.Name, vs.Labels["cluster_name"]+"/"+vs.Namespace)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
-		logs.Error(err.Error())
+		log.Error(err.Error())
 		w.WriteHeader(400)
 		json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
 		return

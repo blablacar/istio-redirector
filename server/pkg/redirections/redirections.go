@@ -12,7 +12,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -26,12 +26,12 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {
-		logs.WithE(err).Info("can't read config.yaml")
+		log.WithError(err).Info("can't read config.yaml")
 	}
 
 	err := viper.Unmarshal(&istioConfig)
 	if err != nil {
-		logs.WithE(err).Info("unable to decode into struct")
+		log.WithError(err).Info("unable to decode into struct")
 	}
 
 	r := istio.Redirections{
@@ -62,13 +62,13 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		if inputData.RedirectionType == "3xx" {
 			code, err := strconv.Atoi(rule[2])
 			if err != nil {
-				logs.WithE(err).Error("fail to parse line")
+				log.WithError(err).Error("fail to parse line")
 				break
 			}
 
 			dest, err := url.Parse(rule[1])
 			if err != nil {
-				logs.WithE(err).Error("fail to parse line")
+				log.WithError(err).Error("fail to parse line")
 				break
 			}
 			toRemoveTo := fmt.Sprintf("%s://%s", dest.Scheme, dest.Host)
@@ -100,19 +100,19 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 
 	t, err := template.ParseFiles("templates/virtual-service.yaml")
 	if err != nil {
-		logs.WithE(err).Error("fail to parse template")
+		log.WithError(err).Error("fail to parse template")
 		return payload, err
 	}
 
 	err = t.Execute(&payload, r)
 	if err != nil {
-		logs.WithE(err).Error("fail to execute content to template")
+		log.WithError(err).Error("fail to execute content to template")
 		return payload, err
 	}
 
 	_, err = istio.Validate(&payload)
 	if err != nil {
-		logs.WithE(err).Error("fail to validate template as VirtualService")
+		log.WithError(err).Error("fail to validate template as VirtualService")
 		return payload, err
 	}
 

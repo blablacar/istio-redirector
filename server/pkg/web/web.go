@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/n0rad/go-erlog/logs"
+	log "github.com/sirupsen/logrus"
 )
 
 func Serve(serverConfig domain.Config) {
@@ -16,9 +16,11 @@ func Serve(serverConfig domain.Config) {
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
-		logs.WithField("address", serverConfig.Server.URL).Info("server has started")
+		log.WithFields(log.Fields{
+			"address": serverConfig.Server.URL,
+		}).Info("server has started")
 		if err := srv.ListenAndServe(); err != nil {
-			logs.WithE(err).Info("server has stopped")
+			log.WithError(err).Error("server has stopped")
 		}
 	}()
 
@@ -39,6 +41,6 @@ func Serve(serverConfig domain.Config) {
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
-	logs.Info("shutting down")
+	log.Info("shutting down")
 	os.Exit(0)
 }
