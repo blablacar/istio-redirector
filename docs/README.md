@@ -2,7 +2,7 @@
 
 > The redirections tool made for SEO managers that perfectly fit in your Istio Mesh by generating Virtual Service files from CSV.
 
-![Demo](https://github.com/etifontaine/istio-redirector/blob/main/.github/images/istio-redirector.gif?raw=true)
+![Demo](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/istio-redirector.gif?raw=true)
 
 ## What is this?
 
@@ -14,12 +14,12 @@ Once generated, the file can either be added to your GitOps repository or downlo
 
 ### The UI for SEO Managers
 
-![Homepage](https://github.com/etifontaine/istio-redirector/blob/main/.github/images/homepage.png?raw=true)
+![Homepage](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/homepage.png?raw=true)
 
 
 ### The output for developpers/Ops
 
-<img src="https://github.com/etifontaine/istio-redirector/blob/main/.github/images/virtualservice.png?raw=true" alt="Virtual Service" height="500"/>
+<img src="https://raw.githubusercontent.com/etifontaine/istio-redirector/master/.github/images/virtualservice.png" alt="Virtual Service" height="500"/>
 
 ## Features
 
