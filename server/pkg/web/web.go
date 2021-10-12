@@ -18,7 +18,7 @@ func Serve(serverConfig domain.Config) {
 	go func() {
 		log.WithFields(log.Fields{
 			"address": serverConfig.Server.URL,
-		}).Info("server has started")
+		}).Debug("server has started")
 		if err := srv.ListenAndServe(); err != nil {
 			log.WithError(err).Error("server has stopped")
 		}
