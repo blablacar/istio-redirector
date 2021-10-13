@@ -31,7 +31,7 @@ export default function Redirections() {
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-              Istio Redirector {CSVData.length>0 ? `- ${CSVData.length} ${CSVData.length > 1 ? 'founds' : 'found'}` : ''}
+              Istio Redirector {CSVData.length>0 ? `- ${CSVData.length} ${CSVData.length > 1 ? 'redirections' : 'redirection'} found` : ''}
             </h2>
             {CSVData.length > 0 ? (
               <div className="mt-5 flex lg:mt-0 lg:ml-4">

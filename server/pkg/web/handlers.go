@@ -10,6 +10,7 @@ import (
 	"istio-redirector/pkg/redirections"
 	"net/http"
 	"strconv"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -38,6 +39,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 			RedirectionType:      r.FormValue("redirectionType"),
 			FallbackValueRegex:   r.FormValue("fallbackValue"),
 			DestinationHost:      r.FormValue("destinationHost"),
+			SourceHosts:          strings.Split(r.FormValue("sourceHosts"), ";"),
 		},
 	)
 
@@ -47,6 +49,11 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+	log.WithFields(log.Fields{
+		"name":      r.FormValue("redirectionName"),
+		"namespace": r.FormValue("redirectionNamespace"),
+		"kube-env":  r.FormValue("redirectionEnv"),
+	}).Info("VirtualService has been generated")
 
 	pushGithub, err := strconv.ParseBool(r.FormValue("pushGithub"))
 	if err != nil {
@@ -80,7 +87,7 @@ func GetConfigHandler(w http.ResponseWriter, r *http.Request) {
 	var frontendConfig domain.FrontendConfig
 	err := viper.Unmarshal(&frontendConfig)
 	if err != nil {
-		log.WithError(err).Info("unable to decode into struct")
+		log.WithError(err).Error("unable to decode into struct")
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(frontendConfig.FrontendConfig)

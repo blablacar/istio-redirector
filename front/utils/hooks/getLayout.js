@@ -14,6 +14,7 @@ export function useGetLayout() {
     redirection_namespace: "",
     fallback_value: "",
     destination_host: "",
+    source_hosts: "",
   });
   const [alert, setAlert] = useState({ isVisible: false });
   const [CSVData, setCSVData] = useState([]);
@@ -57,6 +58,7 @@ export function useGetLayout() {
     formDataValues.append("pushGithub", formData.pushGithub);
     formDataValues.append("fallbackValue", formData.fallback_value);
     formDataValues.append("destinationHost", formData.destination_host);
+    formDataValues.append("sourceHosts", formData.source_hosts);
     fetch(`${publicRuntimeConfig.API_URL}api/csv/upload`, { method: "POST", body: formDataValues })
       .then(async (response) => {
         const contentType = response.headers.get("content-type");

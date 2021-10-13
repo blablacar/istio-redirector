@@ -39,6 +39,7 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 		ClusterName:        inputData.RedirectionEnv,
 		Namespace:          inputData.RedirectionNamespace,
 		FallbackValueRegex: inputData.FallbackValueRegex,
+		Hosts:              inputData.SourceHosts,
 		DestinationHost:    inputData.DestinationHost + ".svc.cluster.local",
 		Gateways:           istioConfig.Istio.Gateways,
 	}
@@ -94,9 +95,6 @@ func Generate(inputData domain.InputData) (bytes.Buffer, error) {
 	}
 
 	r.Hosts = utils.RemoveDuplicates(hosts)
-	if len(r.Hosts) > 1 {
-		return payload, fmt.Errorf("found %v hosts in the source file, should be 1", len(r.Hosts))
-	}
 
 	t, err := template.ParseFiles("templates/virtual-service.yaml")
 	if err != nil {
