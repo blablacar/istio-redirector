@@ -8,6 +8,7 @@ type InputData struct {
 	RedirectionType      string
 	FallbackValueRegex   string
 	DestinationHost      string
+	SourceHosts          []string
 }
 
 type Rule struct {

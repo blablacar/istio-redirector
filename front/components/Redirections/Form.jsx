@@ -1,7 +1,7 @@
 import Papa from "papaparse";
 import { useLayoutContext } from "../../context/layout-context";
 
-const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
+const Form = ({ clusterEnv, clusterNs, clusterSVC }) => {
   const {
     setCSVFile,
     setCSVData,
@@ -23,6 +23,9 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
         break;
       case "fallback_value":
         setFormData({ ...formData, fallback_value: event.target.value.trim() });
+        break;
+      case "source_hosts":
+        setFormData({ ...formData, source_hosts: event.target.value.trim() });
         break;
       case "redirection_env":
         setFormData({ ...formData, redirection_env: event.target.value });
@@ -50,6 +53,8 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
       return;
     }
     setCSVData(result.data);
+    const domains = [...new Set(result.data.map(element => (new URL(element[0])).host))]
+    setFormData({ ...formData, source_hosts: domains.join(';') })
   };
 
   return (
@@ -136,7 +141,7 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
             </div>
           </div>
           <div className="grid grid-cols-8 gap-8 mt-5">
-          <div className="col-span-8 sm:col-span-2">
+            <div className="col-span-8 sm:col-span-2">
               <label htmlFor="fallback_value" className="block text-sm font-medium text-gray-700">
                 Fallback - <small>/bus($|/.*)</small>
               </label>
@@ -146,6 +151,20 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
                 name="fallback_value"
                 id="fallback_value"
                 placeholder="Leave empty if not needed"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div className="col-span-8 sm:col-span-2">
+              <label htmlFor="source_hosts" className="block text-sm font-medium text-gray-700">
+                Hosts - <small>separated with a ;</small>
+              </label>
+              <input
+                onChange={handleChange}
+                type="text"
+                value={formData.source_hosts}
+                name="source_hosts"
+                id="source_hosts"
+                placeholder="Leave empty if in the .csv"
                 className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
@@ -161,16 +180,16 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
                   name="destination_host"
                   className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
-                <option value="" disabled defaultValue={""}>
+                  <option value="" disabled defaultValue={""}>
                     Select your option
-                </option>
-                {clusterSVC.map((svc) => {
-                  return (
-                    <option key={svc} value={svc}>
-                      {svc}
-                    </option>
-                  );
-                })}
+                  </option>
+                  {clusterSVC.map((svc) => {
+                    return (
+                      <option key={svc} value={svc}>
+                        {svc}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             ) : null}
@@ -201,50 +220,30 @@ const Form = ({clusterEnv, clusterNs, clusterSVC}) => {
                 )}
               </p>
               <p className="mt-5">
-                This will generate a single VirtualService, in the cluster <strong>{formData.redirection_env}</strong>, 
-                in the namespace <strong>{formData.redirection_namespace}</strong>.<br/> 
-                It will have the name <strong>{formData.redirection_name}</strong>.<br/>
+                This will generate a single VirtualService, in the cluster <strong>{formData.redirection_env}</strong>,
+                in the namespace <strong>{formData.redirection_namespace}</strong>.<br />
+                It will have the name <strong>{formData.redirection_name}</strong>.<br />
                 {formData.fallback_value.length > 0 ? (
-                <>All requests not handled in the following redirections, matching <strong>{formData.fallback_value} </strong>
-                will be forwarded to the Kubernetes Service <strong>{formData.destination_host}.svc.cluster.local</strong></> ) : null}
+                  <>All requests not handled in the following redirections, matching <strong>{formData.fallback_value} </strong>
+                    will be forwarded to the Kubernetes Service <strong>{formData.destination_host}.svc.cluster.local</strong></>) : null}
               </p>
             </div>
           </div>
-          <div className="mt-5 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-            <div className="space-y-1 text-center">
-              <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div className="flex text-sm text-gray-600">
-                <label
-                  htmlFor="file-upload"
-                  className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                >
-                  <span>Upload a file</span>
-                  <input
-                    onChange={handleChange}
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    accept=".csv"
-                    className="sr-only"
-                  />
-                </label>
-                <p className="pl-1">or drag and drop</p>
-              </div>
-              <p className="text-xs text-gray-500">.csv</p>
-            </div>
+          <div className="mt-5 flex flex-col justify-center border-2 border-gray-300 border-dashed rounded-md">
+            <label
+              htmlFor="file-upload"
+              className="text-center flex justify-center h-10 items-center cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+            >
+              <span>Upload your .csv file with the redirections</span>
+              <input
+                onChange={handleChange}
+                id="file-upload"
+                name="file-upload"
+                type="file"
+                accept=".csv"
+                className="sr-only"
+              />
+            </label>
           </div>
         </>
       ) : null}
