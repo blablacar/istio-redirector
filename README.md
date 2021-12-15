@@ -64,4 +64,4 @@ For more information, please refer to the Contributing section.
 
 ## 📜 License
 
-This software is licensed under the [MIT](https://github.com/etifontaine/istio-redirector/blob/master/LICENSE) © [etifontaine](https://github.com/etifontaine).
+This software is licensed under the [Apache 2.0](https://github.com/etifontaine/istio-redirector/blob/master/LICENSE) © [etifontaine](https://github.com/etifontaine).
