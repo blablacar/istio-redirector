@@ -47,6 +47,37 @@ The easiest way to run istio-redirector is on Docker.
 Either use [our Docker hub image](https://hub.docker.com/r/etifontaine/istio-redirector). Or build the image from the source with the provided Dockerfile.
 
 We also provide the Kubernetes manifests under `_infra` along with a HelmRelease.
+
+## Configuration file
+
+You can configure the istio-redirector API Server through the `server/config.yaml` file. You can find an example under `server/config_example.yaml`.
+
+## Build
+
+### Docker
+```bash
+$ cp server/config_example.yaml server/config.yaml
+$ docker build . -t istio-redirector
+$ docker run istio-redirector
+```
+
+OR without Docker:
+
+### Front
+```bash
+$ cd front
+$ npm install
+$ npm run build
+$ npm run export
+```
+### Go
+
+```bash
+$ cd server
+$ go build
+$ istio-redirector help
+```
+
 ## Commands
 
 ```bash
