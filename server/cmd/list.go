@@ -14,7 +14,7 @@ func init() {
 }
 
 var istioListVSCmd = &cobra.Command{
-	Use:   "list-vs",
+	Use:   "list",
 	Short: "Get all Virtual Services from your cluster created with istio-redirector",
 	RunE: func(cmd *cobra.Command, args []string) error {
 

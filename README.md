@@ -1,16 +1,12 @@
-# Istio redirector
+# istio-redirector
 
 > The redirections tool made for SEO managers that perfectly fit in your Istio Mesh by generating Virtual Service files from CSV.
-
-This project is still under developpement to improve the user experience. However, produced Virtual Services are production ready !
-
-[Documentation](https://etifontaine.github.io/istio-redirector/)
 
 ![Demo](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/istio-redirector.gif?raw=true)
 
 ## What is this ?
 
-Istio redirector is a web application aims to ease your SEO redirections management at scale. Let your SEO managers handle all the redirections they want and get the output as a Istio Virtual Service.
+istio-redirector is a web application that aims to ease your SEO redirections management at scale. Let your SEO managers handle all the redirections they want and get the output as a Istio Virtual Services.
 
 SEO managers use .csv files, that is why the form takes this kind of file as only input. Depending on the type of redirections needed (3xx or 4xx), the server will generate the adequate Virtual Service.
 
@@ -36,6 +32,7 @@ Once generated, the file can either be added to your GitOps repository or downlo
 ### For SEO Managers
 
 * Import your .csv file with all your redirections, and get a nice view of the parsed routes.
+* In the Virtual Services tab, check all the redirections deployed in the cluster.
 
 ### For developpers/Ops
 
@@ -43,9 +40,25 @@ Once generated, the file can either be added to your GitOps repository or downlo
 * Manage your redirections as code
 * Reduce your work and maintenance on the SEO stuff
 
+## Installation
+
+The easiest way to run istio-redirector is on Docker.
+
+Either use [our Docker hub image](https://hub.docker.com/r/etifontaine/istio-redirector). Or build the image from the source with the provided Dockerfile.
+
+We also provide the Kubernetes manifests under `_infra` along with a HelmRelease.
+## Commands
+
+```bash
+$ istio-redirector generate # generate yaml VirtualService from .csv file
+$ istio-redirector help # show the istio-redirector help
+$ istio-redirector list-vs # show the VirtualService generated with istio-redirector in your current kubectl context
+$ istio-redirector web # start the web server
+```
+
 ## 🔧 Pull Request Steps
 
-Istio redirector open source, so you can create a pull request(PR) after you fix issues.
+Istio redirector is open source, if you think your idea can be integrated directly in istio-redirector, please create an issue or a pull request.
 
 ### Pull Request
 
