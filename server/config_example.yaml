@@ -1,22 +1,22 @@
 server:
-  URL: "localhost:8080"
-  allowedOrigins:
+  URL: "localhost:8080" # the address where the API Server will be exposed
+  allowedOrigins: # The allowed CORS, in order to let the SPA reach the API
     - "*"
 
-istio:
+istio: # The name of your Istio IngressGateway in your cluster
   gateways:
     - istio-system/istio-ingressgateway
-  
+
 frontendConfig:
-  enableGitHub: false
-  availableNamespace:
+  enableGitHub: false # Display the "Push to GitHub" button on the UI
+  availableNamespace: # The namespace where you allow the deployment of the Virtual Services
     - default
-  availableCluster:
+  availableCluster: # The name of the cluser in your GitOps repository
     - prod
-  availableDestinationSvc:
+  availableDestinationSvc: # The Service name where the traffic can be sent after the redirection
     - my_svc.svc
 
-github:
+github: # The GitHub configuration to push the Virtual Services to your GitOps repository.
   token: my_secret_token # The GitHub Token used to authenticate
   email: "test@example.com" # The email used for the commits
   owner: example # The GitHub username hosting your GitOps repository
