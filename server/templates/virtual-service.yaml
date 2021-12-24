@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Namespace }}
   labels:
     app: istio-redirector-generated
-    cluster_name: {{ .ClusterName }} 
+    cluster_name: {{ .ClusterName }}
   annotations:
     fluxcd.io/ignore: 'true'
 spec:
@@ -34,12 +34,4 @@ spec:
         - destination:
             host: "{{ $.DestinationService }}"
       {{- end }}
-{{ end }}
-{{- if .FallbackValueRegex }}
-    - match:
-        - uri:
-            regex: "{{ .FallbackValueRegex }}"
-      route:
-        - destination:
-            host: {{ .DestinationHost }}
 {{ end }}

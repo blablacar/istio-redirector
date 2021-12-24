@@ -1,13 +1,11 @@
 import { useEffect } from 'react'
-import { useLayoutContext } from '../context/layout-context'
+import { defaultPayload } from '../pages'
 
-const Alert = () => {
-
-    const { alert, clearAlert } = useLayoutContext()
+const Alert = ({ alert, setAlert }) => {
 
     useEffect(() => {
         setTimeout(() => {
-            clearAlert()
+            setAlert(defaultPayload)
         }, 5000)
     }, [alert.isVisible])
 

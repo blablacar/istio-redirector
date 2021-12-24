@@ -41,6 +41,7 @@ func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 	baseRef, _, err := client.Git.GetRef(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, "refs/heads/"+gitHubConfig.Github.BaseRef)
 	if err != nil {
 		log.Errorf("Git.GetRef returned error: %v", err)
+		return "", err
 	}
 	log.Debugf("%v", baseRef)
 

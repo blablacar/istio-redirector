@@ -15,13 +15,11 @@ type Istio struct {
 }
 
 type Redirections struct {
-	Name               string
-	Namespace          string
-	ClusterName        string
-	DestinationHost    string
-	FallbackValueRegex string
-	EnableFallback     bool
-	Hosts              []string
-	Gateways           []string
-	Rules              []domain.Rule
+	Name            string
+	Namespace       string
+	ClusterName     string
+	DestinationHost string
+	Hosts           []string
+	Gateways        []string
+	Rules           []domain.Rule
 }

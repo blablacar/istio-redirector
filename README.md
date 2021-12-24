@@ -89,7 +89,7 @@ $ istio-redirector web # start the web server
 
 ## 🔧 Pull Request Steps
 
-Istio redirector is open source, if you think your idea can be integrated directly in istio-redirector, please create an issue or a pull request.
+istio-redirector is open source, if you think your idea can be integrated directly in istio-redirector, please create an issue or a pull request.
 
 ### Pull Request
 

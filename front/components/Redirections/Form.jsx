@@ -1,28 +1,31 @@
 import Papa from "papaparse";
-import { useLayoutContext } from "../../context/layout-context";
+import { useState } from "react";
+import getConfig from "next/config";
+import { defaultFormValues } from "../../pages";
+import Check from "../Icons/check";
+import Cross from "../Icons/cross";
+import TargetInformations from "./TargetInformations";
+import UploadButton from "./UploadButton";
 
-const Form = ({ clusterEnv, clusterNs, clusterSVC }) => {
-  const {
-    setCSVFile,
-    setCSVData,
-    handleChangeRedirectionType,
-    redirectionType,
-    setFormData,
-    formData,
-    CSVData,
-    setAlert,
-  } = useLayoutContext();
+const { publicRuntimeConfig } = getConfig();
+
+const Form = ({ sourceInfo, setCSVData, CSVData, formData, setFormData, setAlert, setModal }) => {
+
+  const [CSVFile, setCSVFile] = useState()
 
   const handleChange = (event) => {
     switch (event.target.name) {
+      case "pushGithub":
+        setFormData({ ...formData, pushGithub: event.target.value });
+        break;
+      case "redirection_type":
+        setFormData({ ...formData, redirection_type: event.target.value });
+        break;
       case "redirection_name":
         setFormData({ ...formData, redirection_name: event.target.value });
         break;
       case "destination_host":
         setFormData({ ...formData, destination_host: event.target.value });
-        break;
-      case "fallback_value":
-        setFormData({ ...formData, fallback_value: event.target.value.trim() });
         break;
       case "source_hosts":
         setFormData({ ...formData, source_hosts: event.target.value.trim() });
@@ -33,7 +36,6 @@ const Form = ({ clusterEnv, clusterNs, clusterSVC }) => {
       case "redirection_namespace":
         setFormData({ ...formData, redirection_namespace: event.target.value });
         break;
-
       case "file-upload":
         setCSVFile(event.target.files[0]);
         Papa.parse(event.target.files[0], {
@@ -57,196 +59,175 @@ const Form = ({ clusterEnv, clusterNs, clusterSVC }) => {
     setFormData({ ...formData, source_hosts: domains.join(';') })
   };
 
+  const renderSelectInput = ({ label, id }) => {
+
+    const values = {
+      "redirection_type": ["3xx", "4xx"],
+      "redirection_env": sourceInfo.AvailableCluster,
+      "redirection_namespace": sourceInfo.AvailableNamespace.sort(),
+      "destination_host": sourceInfo.AvailableDestinationSvc,
+    }
+
+    return (
+      <div className="col-span-8 sm:col-span-2">
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+        <select
+          onChange={handleChange}
+          value={formData[id]}
+          id={id}
+          name={id}
+          disabled={id === "destination_host" && formData.redirection_type === '3xx'}
+          className={`${id === "destination_host" && formData.redirection_type === '3xx' ? "cursor-not-allowed" : "cursor-pointer"} mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        >
+          <option value="" disabled defaultValue={""}>
+            Select your option
+          </option>
+          {values[id].map((value, index) => {
+            return <option key={index} value={value}>{value}</option>
+          })}
+        </select>
+      </div>
+    )
+  }
+
+  const renderTextInput = ({ label, id }) => {
+    return (
+      <div className="col-span-8 sm:col-span-2">
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+        <input
+          onChange={handleChange}
+          type="text"
+          value={formData[id]}
+          name={id}
+          id={id}
+          placeholder={label}
+          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+    )
+  }
+
+  const renderCheckboxInput = ({ label, id }) => {
+    return (
+      <div className="col-span-8 sm:col-span-2">
+        <label className="inline-flex items-center ml-6 cursor-pointer" htmlFor={id}>
+          <input
+            type="checkbox"
+            className="form-radio"
+            name={id}
+            id={id}
+            onChange={handleChange}
+          />
+          <span className="ml-2">{label}</span>
+        </label>
+      </div>
+    )
+  }
+
+  const sendData = () => {
+    if (!formData.redirection_name) {
+      setAlert({ isVisible: true, content: "Redirection group name must be filled" });
+      return;
+    }
+    if (CSVData.length === 0) {
+      setAlert({ isVisible: true, content: "CSV file is empty" });
+      return;
+    }
+    if (!formData.redirection_env) {
+      setAlert({ isVisible: true, content: "The environment has not been selected" });
+      return;
+    }
+    if (!formData.redirection_namespace) {
+      setAlert({ isVisible: true, content: "The namespace has not been selected" });
+      return;
+    }
+    if (!formData.redirection_type) {
+      setAlert({ isVisible: true, content: "The redirection type has not been selected" });
+      return;
+    }
+    if (!formData.source_hosts) {
+      setAlert({ isVisible: true, content: "The host list is empty" });
+      return;
+    }
+
+    const formDataValues = new FormData();
+    formDataValues.append("csv_file", CSVFile);
+    formDataValues.append("redirectionName", formData.redirection_name);
+    formDataValues.append("redirectionEnv", formData.redirection_env);
+    formDataValues.append("redirectionNamespace", formData.redirection_namespace);
+    formDataValues.append("redirectionType", formData.redirection_type);
+    formDataValues.append("pushGithub", formData.pushGithub === "on");
+    formDataValues.append("destinationHost", formData.destination_host);
+    formDataValues.append("sourceHosts", formData.source_hosts);
+    fetch(`${publicRuntimeConfig.API_URL}api/csv/upload`, { method: "POST", body: formDataValues })
+      .then(async (response) => {
+        if (response.status >= 400) {
+          const err = await response.json()
+          throw Error(err.error)
+        }
+        const contentType = response.headers.get("content-type");
+        const payload = contentType === "application/json" ? await response.json() : await response.blob();
+        clearData();
+        setModal({
+          isVisible: true,
+          isJSON: contentType === "application/json",
+          payload
+        })
+      }).catch(async err => {
+        setAlert({ isVisible: true, content: `An error happened server side: ${err.message}` })
+      })
+  };
+
+  const clearData = () => {
+    setCSVData([])
+    setCSVFile([])
+    setFormData(defaultFormValues)
+  }
+
   return (
     <div>
-      <div>
-        <div className="px-4 py-5 bg-white sm:p-6">
-          <div className="grid grid-cols-8 gap-8">
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_type" className="block text-sm font-medium text-gray-700">
-                Redirection type
-              </label>
-              <select
-                onChange={handleChangeRedirectionType}
-                value={redirectionType}
-                id="redirection_type"
-                name="redirection_type"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      <div className="px-4 py-5 bg-white sm:p-6">
+        <div className="grid grid-cols-8 gap-8">
+          {renderSelectInput({ label: "Redirection type", id: "redirection_type" })}
+          {renderSelectInput({ label: "Environment", id: "redirection_env" })}
+          {renderSelectInput({ label: "Namespace", id: "redirection_namespace" })}
+          {renderTextInput({ label: "Redirection group name", id: "redirection_name" })}
+        </div>
+        <div className="grid grid-cols-8 gap-8 mt-5">
+          {renderTextInput({ label: "Hosts", id: "source_hosts" })}
+          {renderSelectInput({ label: "Destination host", id: "destination_host" })}
+          {sourceInfo.EnableGitHub && renderCheckboxInput({ label: "Create PR on GitHub", id: "pushGithub" })}
+          <div className="col-span-8 sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Action
+            </label>
+            <div className="flex justify-between">
+              <button
+                onClick={() => clearData()}
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               >
-                <option value="" disabled defaultValue={""}>
-                  Select your option
-                </option>
-                <option value="3xx">3xx</option>
-                <option value="4xx">4xx</option>
-              </select>
-            </div>
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_env" className="block text-sm font-medium text-gray-700">
-                Environment
-              </label>
-              <select
-                onChange={handleChange}
-                value={formData.redirection_env}
-                id="redirection_env"
-                name="redirection_env"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                <Cross />
+                Reset
+              </button>
+              <button
+                onClick={sendData}
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                <option value="" disabled defaultValue={""}>
-                  Select your option
-                </option>
-                {clusterEnv.map((env) => {
-                  return (
-                    <option key={env} value={env}>
-                      {env}
-                    </option>
-                  );
-                })}
-              </select>
+                <Check />
+                Send
+              </button>
             </div>
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_namespace" className="block text-sm font-medium text-gray-700">
-                Namespace
-              </label>
-              <select
-                onChange={handleChange}
-                value={formData.redirection_namespace}
-                id="redirection_namespace"
-                name="redirection_namespace"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled defaultValue={""}>
-                  Select your option
-                </option>
-                {clusterNs.sort().map((ns) => {
-                  return (
-                    <option key={ns} value={ns}>
-                      {ns}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="redirection_name" className="block text-sm font-medium text-gray-700">
-                Redirection group name
-              </label>
-              <input
-                onChange={handleChange}
-                type="text"
-                name="redirection_name"
-                id="redirection_name"
-                placeholder="redirection-name"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-8 gap-8 mt-5">
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="fallback_value" className="block text-sm font-medium text-gray-700">
-                Fallback - <small>/bus($|/.*)</small>
-              </label>
-              <input
-                onChange={handleChange}
-                type="text"
-                name="fallback_value"
-                id="fallback_value"
-                placeholder="Leave empty if not needed"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div className="col-span-8 sm:col-span-2">
-              <label htmlFor="source_hosts" className="block text-sm font-medium text-gray-700">
-                Hosts - <small>separated with a ;</small>
-              </label>
-              <input
-                onChange={handleChange}
-                type="text"
-                value={formData.source_hosts}
-                name="source_hosts"
-                id="source_hosts"
-                placeholder="Leave empty if in the .csv"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            {redirectionType === '4xx' || formData.fallback_value.length > 0 ? (
-              <div className="col-span-8 sm:col-span-2">
-                <label htmlFor="destination_host" className="block text-sm font-medium text-gray-700">
-                  Destination host
-                </label>
-                <select
-                  onChange={handleChange}
-                  value={formData.destination_host}
-                  id="destination_host"
-                  name="destination_host"
-                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled defaultValue={""}>
-                    Select your option
-                  </option>
-                  {clusterSVC.map((svc) => {
-                    return (
-                      <option key={svc} value={svc}>
-                        {svc}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            ) : null}
           </div>
         </div>
       </div>
-      {redirectionType.length > 0 && CSVData.length === 0 ? (
-        <>
-          <div className="w-full rounded-lg shadow-lg p-4 flex md:flex-row flex-col">
-            <div className="flex-1">
-              <p className="text-gray-500 my-1">
-                {redirectionType === "3xx" ? (
-                  <>
-                    <strong>Expected .csv file format: </strong>
-                    <span>from,to,status</span>
-                    <br />
-                    <strong>Example: </strong>
-                    <span>/my-page,/my-new-page,301</span>
-                  </>
-                ) : (
-                  <>
-                    <strong>Expected .csv file format: </strong>
-                    <span>url,status</span>
-                    <br />
-                    <strong>Example: </strong>
-                    <span>/my-page,410</span>
-                  </>
-                )}
-              </p>
-              <p className="mt-5">
-                This will generate a single VirtualService, in the cluster <strong>{formData.redirection_env}</strong>,
-                in the namespace <strong>{formData.redirection_namespace}</strong>.<br />
-                It will have the name <strong>{formData.redirection_name}</strong>.<br />
-                {formData.fallback_value.length > 0 ? (
-                  <>All requests not handled in the following redirections, matching <strong>{formData.fallback_value} </strong>
-                    will be forwarded to the Kubernetes Service <strong>{formData.destination_host}.svc.cluster.local</strong></>) : null}
-              </p>
-            </div>
-          </div>
-          <div className="mt-5 flex flex-col justify-center border-2 border-gray-300 border-dashed rounded-md">
-            <label
-              htmlFor="file-upload"
-              className="text-center flex justify-center h-10 items-center cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-            >
-              <span>Upload your .csv file with the redirections</span>
-              <input
-                onChange={handleChange}
-                id="file-upload"
-                name="file-upload"
-                type="file"
-                accept=".csv"
-                className="sr-only"
-              />
-            </label>
-          </div>
-        </>
-      ) : null}
+      <TargetInformations formData={formData} />
+      <UploadButton handleChange={handleChange} hasData={CSVData.length > 0} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Create a question about Istio redirector
+about: Create a question about istio-redirector
 title: ''
 labels: Question
 assignees: ''

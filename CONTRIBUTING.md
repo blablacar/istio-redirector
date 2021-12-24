@@ -1,8 +1,8 @@
-# Contributing to Istio redirector
+# Contributing to istio-redirector
 
 First off, thanks for taking the time to contribute! 🎉 😘 ✨
 
-The following is a set of guidelines for contributing to Istio redirector. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to istio-redirector. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 ## Reporting Bugs
 Bugs are tracked as GitHub issues. Search the list and try reproduce before you create an issue. When you create an issue, please provide the following information by filling in the template.
@@ -17,7 +17,7 @@ Explain the problem and include additional details to help maintainers reproduce
 * **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem.
 
 ## Suggesting Enhancements
-In case you want to suggest for Istio redirector, please follow this guideline to help maintainers and the community understand your suggestion.
+In case you want to suggest for istio-redirector, please follow this guideline to help maintainers and the community understand your suggestion.
 Before creating suggestions, please check [issue list](https://github.com/etifontaine/istio-redirector/issues) if there's already a request.
 
 Create an issue and provide the following information:
@@ -25,13 +25,13 @@ Create an issue and provide the following information:
 * **Use a clear and descriptive title** for the issue to identify the suggestion.
 * **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
 * **Provide specific examples to demonstrate the steps.** Include copy/pasteable snippets which you use in those examples, as Markdown code blocks.
-* **Include screenshots and animated GIFs** which helps demonstrate the steps or point out the part of Istio redirector Editor which the suggestion is related to.
-* **Explain why this enhancement would be useful** to most Istio redirector users.
+* **Include screenshots and animated GIFs** which helps demonstrate the steps or point out the part of istio-redirector Editor which the suggestion is related to.
+* **Explain why this enhancement would be useful** to most istio-redirector users.
 * **List some other text editors or applications where this enhancement exists.**
 
 ## First Code Contribution
 
-Unsure where to begin contributing to Istio redirector? You can start by looking through these `document`, `good first issue` and `help wanted` issues:
+Unsure where to begin contributing to istio-redirector? You can start by looking through these `document`, `good first issue` and `help wanted` issues:
 
 * **document issues**: issues which should be reviewed or improved.
 * **good first issues**: issues which should only require a few lines of code, and a test or two.
