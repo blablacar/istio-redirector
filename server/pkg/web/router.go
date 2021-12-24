@@ -66,7 +66,6 @@ func register(srvConfig domain.Config) *http.Server {
 	router.HandleFunc("/api/csv/upload", UploadCSVHandler).Methods("POST")
 
 	router.HandleFunc("/api/vs/get", virtual_services.GetVSHandler).Methods("GET")
-	router.HandleFunc("/api/vs/update", virtual_services.UpdateVSHandler).Methods("POST")
 
 	router.HandleFunc("/api/config", GetConfigHandler).Methods("GET")
 

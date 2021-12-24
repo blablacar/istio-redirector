@@ -38,4 +38,4 @@
 
 
 ---
-Thank you for your contribution to Istio redirector.
+Thank you for your contribution to istio-redirector.

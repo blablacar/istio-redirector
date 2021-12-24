@@ -6,7 +6,6 @@ type InputData struct {
 	RedirectionEnv       string
 	RedirectionNamespace string
 	RedirectionType      string
-	FallbackValueRegex   string
 	DestinationHost      string
 	SourceHosts          []string
 }

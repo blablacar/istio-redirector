@@ -37,7 +37,6 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 			RedirectionEnv:       r.FormValue("redirectionEnv"),
 			RedirectionNamespace: r.FormValue("redirectionNamespace"),
 			RedirectionType:      r.FormValue("redirectionType"),
-			FallbackValueRegex:   r.FormValue("fallbackValue"),
 			DestinationHost:      r.FormValue("destinationHost"),
 			SourceHosts:          strings.Split(r.FormValue("sourceHosts"), ";"),
 		},
@@ -67,8 +66,9 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil {
 			log.Error(err.Error())
-			w.WriteHeader(400)
+			w.WriteHeader(500)
 			json.NewEncoder(w).Encode(map[string]string{"PR": prURL, "error": err.Error()})
+			return
 		}
 		json.NewEncoder(w).Encode(map[string]string{"PR": prURL})
 		return
