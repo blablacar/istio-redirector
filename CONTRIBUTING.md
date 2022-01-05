@@ -18,7 +18,7 @@ Explain the problem and include additional details to help maintainers reproduce
 
 ## Suggesting Enhancements
 In case you want to suggest for istio-redirector, please follow this guideline to help maintainers and the community understand your suggestion.
-Before creating suggestions, please check [issue list](https://github.com/etifontaine/istio-redirector/issues) if there's already a request.
+Before creating suggestions, please check [issue list](https://github.com/blablacar/istio-redirector/issues) if there's already a request.
 
 Create an issue and provide the following information:
 
