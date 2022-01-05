@@ -9,7 +9,7 @@ assignees: ''
 <!--
   To make it easier for us to help you, please include as much useful information as possible.
 
-  Before opening a new issue, please search existing issues https://github.com/etifontaine/istio-redirector/issues
+  Before opening a new issue, please search existing issues https://github.com/blablacar/istio-redirector/issues
 -->
 
 ## Summary

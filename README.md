@@ -2,7 +2,7 @@
 
 > The redirections tool made for SEO managers that perfectly fit in your Istio Mesh by generating Virtual Service files from CSV.
 
-![Demo](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/istio-redirector.gif?raw=true)
+![Demo](https://github.com/blablacar/istio-redirector/blob/master/.github/images/istio-redirector.gif?raw=true)
 
 ## What is this ?
 
@@ -14,12 +14,12 @@ Once generated, the file can either be added to your GitOps repository or downlo
 
 ### The UI for SEO Managers
 
-![Homepage](https://github.com/etifontaine/istio-redirector/blob/master/.github/images/homepage.png?raw=true)
+![Homepage](https://github.com/blablacar/istio-redirector/blob/master/.github/images/homepage.png?raw=true)
 
 
 ### The output for developpers/Ops
 
-<img src="https://github.com/etifontaine/istio-redirector/blob/master/.github/images/virtualservice.png?raw=true" alt="Virtual Service" height="500"/>
+<img src="https://github.com/blablacar/istio-redirector/blob/master/.github/images/virtualservice.png?raw=true" alt="Virtual Service" height="500"/>
 
 ## Techno
 
@@ -99,13 +99,13 @@ For more information, please refer to the Contributing section.
 
 ## 💬 Contributing
 
-* [Code of Conduct](https://github.com/etifontaine/istio-redirector/blob/master/CODE_OF_CONDUCT.md)
-* [Contributing Guideline](https://github.com/etifontaine/istio-redirector/blob/master/CONTRIBUTING.md)
-* [Commit Convention](https://github.com/etifontaine/istio-redirector/blob/master/./github/docs/COMMIT_MESSAGE_CONVENTION.md)
-* [Issue Guidelines](https://github.com/etifontaine/istio-redirector/tree/master/.github/ISSUE_TEMPLATE)
+* [Code of Conduct](https://github.com/blablacar/istio-redirector/blob/master/CODE_OF_CONDUCT.md)
+* [Contributing Guideline](https://github.com/blablacar/istio-redirector/blob/master/CONTRIBUTING.md)
+* [Commit Convention](https://github.com/blablacar/istio-redirector/blob/master/./github/docs/COMMIT_MESSAGE_CONVENTION.md)
+* [Issue Guidelines](https://github.com/blablacar/istio-redirector/tree/master/.github/ISSUE_TEMPLATE)
 
 
 
 ## 📜 License
 
-This software is licensed under the [Apache 2.0](https://github.com/etifontaine/istio-redirector/blob/master/LICENSE) © [etifontaine](https://github.com/etifontaine).
+This software is licensed under the [Apache 2.0](https://github.com/blablacar/istio-redirector/blob/master/LICENSE) © [BlaBlaCar](https://github.com/blablacar).
