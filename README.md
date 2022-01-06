@@ -44,7 +44,7 @@ Once generated, the file can either be added to your GitOps repository or downlo
 
 The easiest way to run istio-redirector is on Docker.
 
-Either use [our Docker hub image](https://hub.docker.com/r/etifontaine/istio-redirector). Or build the image from the source with the provided Dockerfile.
+Either use [our GitHub Packages image](https://github.com/blablacar/istio-redirector/pkgs/container/istio-redirector). Or build the image from the source with the provided Dockerfile.
 
 We also provide the Kubernetes manifests under `_infra` along with a HelmRelease.
 

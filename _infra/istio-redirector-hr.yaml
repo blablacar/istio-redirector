@@ -11,12 +11,12 @@ spec:
   releaseName: istio-redirector
   chart:
     git: git@github.com:blablacar/istio-redirector.git
-    ref: v0.0.3
+    ref: v0.0.22
     path: _infra/istio-redirector
   values:
     image:
-      repository: blablacar/istio-redirector
-      tag: v0.0.3
+      repository: ghcr.io/blablacar/istio-redirector
+      tag: v0.0.22
 
     apiConfig:
       server:
