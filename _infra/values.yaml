@@ -107,4 +107,5 @@ apiConfig:
     email: "bot_email"
     owner: my_repo_owner
     repo: "istio-redirector"
-    baseBranchName: "istio-redirector"
+    baseRef: "master"
+    newBranchPrefix: "istio-redirector"
