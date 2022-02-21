@@ -17,6 +17,8 @@ spec:
     image:
       repository: ghcr.io/blablacar/istio-redirector
       tag: v0.0.22
+    nodeAffinity:
+      key: cloud.blabla.io/k8s-volatile
 
     apiConfig:
       server:
@@ -44,7 +46,6 @@ spec:
         repo: "my_gitops_repo"
         baseRef: "master"
         newBranchPrefix: "istio-redirector"
-
   rollback:
     # https://docs.fluxcd.io/projects/helm-operator/en/latest/references/helmrelease-custom-resource.html#rollbacks
     # If set, will perform automatic rollbacks for this release.

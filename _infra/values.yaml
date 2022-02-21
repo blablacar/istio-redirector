@@ -45,6 +45,11 @@ tolerations:
   operator: Equal
   value: "true"
   effect: NoSchedule
+- key: cloud.blabla.io/k8s-volatile
+  operator: Equal
+  value: "true"
+  effect: NoSchedule
+
 
 nodeAffinity:
   key: cloud.google.com/gke-preemptible
