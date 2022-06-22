@@ -6,8 +6,6 @@ metadata:
   labels:
     app: istio-redirector-generated
     cluster_name: {{ .ClusterName }}
-  annotations:
-    fluxcd.io/ignore: 'true'
 spec:
   gateways:
     {{- range $gateway := .Gateways}}
