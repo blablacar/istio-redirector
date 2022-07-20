@@ -14,7 +14,7 @@ frontendConfig:
   availableCluster: # The name of the cluser in your GitOps repository
     - prod
   availableDestinationSvc: # The Service name where the traffic can be sent after the redirection
-    - my_svc.svc
+    - my_svc.ns
 
 github: # The GitHub configuration to push the Virtual Services to your GitOps repository.
   token: my_secret_token # The GitHub Token used to authenticate

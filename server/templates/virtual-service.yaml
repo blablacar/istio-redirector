@@ -30,6 +30,6 @@ spec:
           httpStatus: {{ $rule.Code }}
       route:
         - destination:
-            host: "{{ $.DestinationService }}"
+            host: "{{ $.DestinationHost }}"
       {{- end }}
 {{ end }}
