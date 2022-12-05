@@ -62,7 +62,7 @@ func UploadCSVHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if pushGithub {
-		prURL, err := github.Create(payload.Bytes(), r.FormValue("redirectionName"), r.FormValue("redirectionEnv")+"/"+r.FormValue("redirectionNamespace"))
+		prURL, err := github.Create(payload.Bytes(), r.FormValue("redirectionName"), r.FormValue("redirectionEnv")+"/"+r.FormValue("redirectionNamespace")+"/redirections")
 		w.Header().Set("Content-Type", "application/json")
 		if err != nil {
 			log.Error(err.Error())

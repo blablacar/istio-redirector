@@ -63,7 +63,7 @@ func Create(fileContent []byte, prName string, gitPath string) (string, error) {
 		Branch:    newRef.Ref,
 		Committer: &github.CommitAuthor{Name: github.String("istio-redirector Bot"), Email: github.String(gitHubConfig.Github.Email)},
 	}
-	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, gitPath+"/"+prName+".yaml", opts)
+	_, _, errCreateFile := client.Repositories.CreateFile(ctx, gitHubConfig.Github.Owner, gitHubConfig.Github.Repo, gitPath+"/"+prName+"-vs.yaml", opts)
 	if errCreateFile != nil {
 		fmt.Println(errCreateFile)
 		return "", errCreateFile
