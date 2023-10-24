@@ -1,6 +1,6 @@
 {{- if (ne .Values.autoscaling.minReplicas 0.0) }}
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Release.Name }}
