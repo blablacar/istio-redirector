@@ -4,7 +4,7 @@ kind: DestinationRule
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+{{- include "labels" . | nindent 4 }}
 spec:
   host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
 {{- if .Values.destinationRule.trafficPolicy }}

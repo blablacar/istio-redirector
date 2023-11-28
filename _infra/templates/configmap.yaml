@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}
+  labels:
+{{- include "labels" . | nindent 4 }}
 data:
   config.yaml: |+
     {{- tpl (.Files.Get "files/config.yaml") . | nindent 4 }}

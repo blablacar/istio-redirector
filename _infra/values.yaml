@@ -70,6 +70,8 @@ volumeMounts:
     subPath: config.yaml
     readOnly: true
 
+commonLabels: {}
+
 deployment:
   labels: {}
 

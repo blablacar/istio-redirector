@@ -4,11 +4,7 @@ kind: ServiceMonitor
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
-    helm.sh/chart: {{ include "istio-redirector.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app: {{ .Release.Name }}
+{{- include "labels" . | nindent 4 }}
 spec:
   jobLabel: app
   endpoints:
