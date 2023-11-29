@@ -4,7 +4,7 @@ kind: VirtualService
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+{{- include "labels" . | nindent 4 }}
 spec:
   hosts:
   -  {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local

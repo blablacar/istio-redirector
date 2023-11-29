@@ -30,3 +30,18 @@ Create chart name and version as used by the chart label.
 {{- define "istio-redirector.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Labels that should be added on each resource
+*/}}
+{{- define "labels" -}}
+app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+helm.sh/chart: {{ include "istio-redirector.chart" . }}
+app: {{ .Release.Name }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end -}}

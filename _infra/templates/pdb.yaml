@@ -3,9 +3,11 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app: {{ .Release.Name }}
+{{- include "labels" . | nindent 4 }}
 spec:
   maxUnavailable: {{ .Values.pdb }}
   selector:
     matchLabels:
+      app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
       app: {{ .Release.Name }}

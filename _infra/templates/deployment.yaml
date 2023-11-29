@@ -3,14 +3,10 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
-    helm.sh/chart: {{ include "istio-redirector.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app: {{ .Release.Name }}
 {{- with .Values.deployment.labels }}
 {{ toYaml . | indent 4 }}
 {{- end }}
+{{- include "labels" . | nindent 4 }}
 spec:
   revisionHistoryLimit: 3
   replicas: {{ .Values.autoscaling.minReplicas }}
@@ -27,15 +23,11 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "istio-redirector.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app: {{ .Release.Name }}
 {{- with .Values.pod.labels }}
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{- include "labels" . | nindent 8 }}
       annotations:
-        json_logs: "true"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 {{- with .Values.pod.annotations }}
 {{ toYaml . | indent 8 }}
 {{- end }}
