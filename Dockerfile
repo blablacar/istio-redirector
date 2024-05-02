@@ -1,5 +1,5 @@
 # Build the front app
-FROM node:16.10 as front
+FROM node:21 as front
 
 # Create app directory
 RUN mkdir -p /usr/src/front
@@ -21,7 +21,7 @@ RUN npm run export
 
 
 # Build the server
-FROM golang:1.17 as server
+FROM golang:1.21 as server
 
 RUN mkdir -p /usr/src/server
 WORKDIR /usr/src/server
