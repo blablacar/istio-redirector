@@ -5,6 +5,9 @@ metadata:
   name: {{ .Release.Name }}
   labels:
 {{- include "labels" . | nindent 4 }}
+{{- if .Values.istioLabels }}
+{{ toYaml .Values.istioLabels | indent 4 }}
+{{- end }}
 spec:
   hosts:
   -  {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
