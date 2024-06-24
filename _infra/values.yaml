@@ -71,6 +71,7 @@ volumeMounts:
     readOnly: true
 
 commonLabels: {}
+istioLabels: {}
 
 deployment:
   labels: {}
