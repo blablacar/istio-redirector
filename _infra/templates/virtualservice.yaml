@@ -4,6 +4,7 @@ kind: VirtualService
 metadata:
   name: {{ .Release.Name }}
   labels:
+    istio.io/tag: canary
 {{- include "labels" . | nindent 4 }}
 {{- if .Values.istioLabels }}
 {{ toYaml .Values.istioLabels | indent 4 }}
