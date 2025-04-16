@@ -21,7 +21,7 @@ RUN npm run export
 
 
 # Build the server
-FROM golang:1.21 as server
+FROM golang:1.23 as server
 
 RUN mkdir -p /usr/src/server
 WORKDIR /usr/src/server
